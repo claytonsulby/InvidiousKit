@@ -15,12 +15,20 @@ public class Invidious {
     
     private let fetcher: InvidiousFetcher
     
-    init(instance: String, requestTimeout timeout: TimeInterval = 15) {
+    /// Initializes the Invidious object used to fetch data from a choosen instance
+    /// - Parameters:
+    ///   - instance: URL String of an Invidious instance
+    ///   - timeout: Data request timeout in seconds
+    public init(instance: String, requestTimeout timeout: TimeInterval = 15) {
         self.instance = instance
         self.timeout = timeout
         self.fetcher = InvidiousFetcher(instance: instance, timeout: timeout)
     }
-
+    
+    /// Fetches video data from Invidious
+    /// - Parameters:
+    ///   - id: Video id (11 Characters)
+    ///   - completionHandler: Closure called when the fetch is completed, contains optional Video and InvidiousError objects
     public func getVideo(id: String, completionHandler: @escaping (Video?, InvidiousError?) -> Void) {
         fetcher.fetchVideo(videoId: id) { video, error in
             if let video = video {
@@ -31,7 +39,11 @@ public class Invidious {
             return
         }
     }
-
+    
+    /// Fetches comments of a video
+    /// - Parameters:
+    ///   - id: Video id (11 Characters)
+    ///   - completionHandler: Closure called when the fetch is completed, contains the following optional properties: Number of comments, Array of Comment objects, continuation String and InvidiousError
     public func getVideoComments(id: String, completionHandler: @escaping (Int32?, [Comment]?, String?, InvidiousError?) -> Void) {
         fetcher.fetchComments(videoId: id) { comments, error in
             if let comments = comments {
@@ -42,7 +54,11 @@ public class Invidious {
             return
         }
     }
-
+    
+    /// Fetches captions for a video
+    /// - Parameters:
+    ///   - id: Video id (11 Characters)
+    ///   - completionHandler: Closure called when the fetch is completed, contains optional array of Caption objects and InvidiousError
     public func getCaptions(id: String, completionHandler: @escaping ([Caption]?, InvidiousError?) -> Void) {
         fetcher.fetchCaptions(videoId: id) { captions, error in
             if let captions = captions {
@@ -53,7 +69,12 @@ public class Invidious {
             return
         }
     }
-
+    
+    /// Fetches trending videos
+    /// - Parameters:
+    ///   - type: Type filer (news, sport, technology...)
+    ///   - region: Two character region code (CA, IE, CH...)
+    ///   - completionHandler: Closure called when the fetch is completed, contains optional array of Video preview objects and InvidiousError
     public func getTrendingVideos(type: String? = nil, regionCode region: String? = nil, completionHandler: @escaping ([VideoPreview.ChannelVideo]?, InvidiousError?) -> Void) {
         fetcher.fetchTrending(type: type, region: region) { videos, error in
             if let videos = videos {
@@ -63,7 +84,9 @@ public class Invidious {
             completionHandler(nil, error)
         }
     }
-
+    
+    /// Fetches videos popular on that instance
+    /// - Parameter completionHandler: Closure called when the fetch is completed, contains optional array of Video preview objects and InvidiousError
     public func getPopularVideos(completionHandler: @escaping ([VideoPreview.PopularVideo]?, InvidiousError?) -> Void) {
         fetcher.fetchPopular { videos, error in
             if let videos = videos {
@@ -73,7 +96,12 @@ public class Invidious {
             completionHandler(nil, error)
         }
     }
-
+    
+    /// Fetches channel data from Invidious
+    /// - Parameters:
+    ///   - id: Channel id
+    ///   - sort: How items should be sorted (oldest, newest, popular)
+    ///   - completionHandler: Closure called when the fetch is completed, contains optional Channel and InvidiousError objects
     public func getChannel(id: String, sortedBy sort: Channel.SortDescriptor = .newest, completionHandler: @escaping (Channel?, InvidiousError?) -> Void) {
         fetcher.fetchChannel(channelId: id) { channel, error in
             if let channel = channel {
@@ -83,7 +111,10 @@ public class Invidious {
             completionHandler(nil, error)
         }
     }
-
+    /// Fetches all videos for a channel
+    /// - Parameter id: Channel id
+    /// - Parameter sort: How items should be sorted (oldest, newest, popular)
+    /// - Parameter completionHandler: Closure called when the fetch is completed, contains optional array of Video preview objects and InvidiousError
     public func getChannelVideos(id: String, sortedBy sort: Channel.SortDescriptor = .newest, completionHandler: @escaping ([VideoPreview.ChannelVideo]?, InvidiousError?) -> Void) {
         fetcher.fetchChannelVideos(channelId: id) { videos, error in
             if let videos = videos {
@@ -95,6 +126,10 @@ public class Invidious {
         
     }
 
+    /// Fetches all playlists for a channel
+    /// - Parameter id: Channel id
+    /// - Parameter sort: How items should be sorted (oldest, newest, popular)
+    /// - Parameter completionHandler: Closure called when the fetch is completed, contains optional array of Playlist preview objects and InvidiousError
     public func getChannelPlaylists(id: String, sortedBy sort: Channel.SortDescriptor, continuation: String? = nil, completionHandler: @escaping ([ChannelPlaylist]?, String?, InvidiousError?) -> Void) {
         fetcher.fetchChannelPlaylists(channelId: id, sortBy: sort.toString()) { reference, error in
             if let reference = reference {
@@ -104,7 +139,10 @@ public class Invidious {
             completionHandler(nil, nil, error)
         }
     }
-
+    
+    /// Fetches all comments for a channel
+    /// - Parameter id: Channel id
+    /// - Parameter completionHandler: Closure called when the fetch is completed, contains following optional values: array of Comment objects, continuation String and InvidiousError
     public func getChannelComments(id: String, completionHandler: @escaping ([Comment]?, String?, InvidiousError?) -> Void) {
         fetcher.fetchChannelComments(channelId: id) { reference, error in
             if let reference = reference {
@@ -114,7 +152,11 @@ public class Invidious {
             completionHandler(nil, nil, error)
         }
     }
-
+    
+    /// Fetches search suggestions for a given search query
+    /// - Parameters:
+    ///   - query: Search query on which the suggestions are based on
+    ///   - completionHandler: Closure called when the fetch is completed, contains the following optional values: search query string, array of search suggestions and InvidiousError
     public func getSearchSuggestions(searchQuery query: String, completionHandler: @escaping (String?, [String]?, InvidiousError?) -> Void) {
         fetcher.fetchSearchSuggestions(searchQuery: query) { reference, error in
             if let reference = reference {
@@ -125,7 +167,18 @@ public class Invidious {
         }
         
     }
-
+    
+    /// Fetches search results for a given search query
+    /// - Parameters:
+    ///   - query: Search query
+    ///   - page: Page of results that should return (if multiple pages)
+    ///   - sort: How the results should be sorted (relevance, rating, upload date, view count)
+    ///   - time: Specifies the timeframe from which the results should be (last hour, today, this week...)
+    ///   - duration: Filiters long or short videos
+    ///   - type: Expected result type (video, channel, playlist, all)
+    ///   - features: Additional features
+    ///   - region: Two character region code (CA, IE, CH...)
+    ///   - completionHandler: Closure called when the fetch is completed, contains optional array of Searchable items and InvidiousError objects
     public func getSearchResults(searchQuery query: String, page: Int = 1, sortedBy sort: SearchOptions.Sorting? = nil, SortedByTime time: SearchOptions.Time? = nil, duration: SearchOptions.Duration? = nil, expectedResultType type: SearchOptions.AcceptableResultType = .all, expectedFeatures features: [SearchOptions.Feature]? = nil, searchRegion region: String? = nil, completionHandler: @escaping ([Searchable]?, InvidiousError?) -> Void) {
         
         fetcher.fetchSearchResults(searchQuery: query, page: Int32(page), soryBy: sort?.rawValue, timeSort: time?.rawValue, duration: duration?.rawValue, type: type.rawValue, features: features?.map { $0.rawValue }, region: region) { searchResults, error in
@@ -147,6 +200,10 @@ public class Invidious {
         }
     }
 
+    /// Fetches video data from Invidious
+    /// - Parameters:
+    ///   - id: Playlist id
+    ///   - completionHandler: Closure called when the fetch is completed, contains optional Playlist and InvidiousError objects
     public func getPlaylist(id: String, page: Int = 1, completionHandler: @escaping (Playlist?, InvidiousError?) -> Void) {
         fetcher.fetchPlaylist(playlistId: id) { playlist, error in
             if let playlist = playlist {
