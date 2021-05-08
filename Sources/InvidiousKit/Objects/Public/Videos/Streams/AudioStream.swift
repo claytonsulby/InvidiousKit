@@ -10,6 +10,8 @@ import Foundation
 
 public struct AudioStream {
     
+    /// Initializes AudioStream from JSON decoded reponse
+    /// - Parameter stream: JSON decoded response from Invidious
     internal init?(from stream: InvidiousAdaptiveFormat) {
         if !stream.type.starts(with: "audio") {
             return nil

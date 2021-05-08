@@ -8,8 +8,11 @@
 
 import Foundation
 
+/// Object responsible for storing comment data
 public struct Comment {
     
+    /// Initializes Playlist from JSON decoded response
+    /// - Parameter comment: JSON decoded response from Invidious
     internal init(from comment: InvidiousComment) {
         self.author = comment.author
         self.authorId = comment.authorId
@@ -48,7 +51,7 @@ public struct Comment {
     public let replyContinuation: String
     
     //content heart ??
-    public let creatorName: String
-    public let creatorThumbnail: String
+    public let creatorName: String?
+    public let creatorThumbnail: String?
     
 }

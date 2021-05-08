@@ -8,13 +8,16 @@
 
 import Foundation
 
+/// Object responsible for storing video data
 public struct Video: Identifiable {
     
+    /// Initializes Video from JSON decoded response
+    /// - Parameter video: JSON decoded response from Invidious
     internal init(from video: InvidiousVideo) {
         
         self.title = video.title
         self.id = video.videoId
-        self.thumbnails = Self.getThumbnails(thumbnailsArray: video.videoThumbnails)
+        self.thumbnails = video.videoThumbnails.map { Thumbnail(from: $0)}
         
         self.description = video.description
         self.descriptionHtml = video.descriptionHtml
@@ -45,57 +48,24 @@ public struct Video: Identifiable {
         
         self.dashUrl = video.dashUrl
         
-        self.formattedStreams = FormattedStream.fromStreamArray(streamArray: video.formatStreams)
-        self.audioStreams = Self.getAudioStreams(streamArray: video.adaptiveFormats)
-        self.videoStreams = Self.getVideoStreams(streamArray: video.adaptiveFormats)
+        self.formattedStreams = video.formatStreams.map { FormattedStream(from: $0) }
         
-        self.captions = Self.getCaptions(captionsArray: video.captions)
-        
-        self.recommendedVideos = Self.getRecommendedVideos(videos: video.recommendedVideos)
-    }
-    
-    internal static func getThumbnails(thumbnailsArray: [InvidiousVideoThumbnail]) -> [Thumbnail] {
-        var thumbnails = [Thumbnail]()
-        for entry in thumbnailsArray {
-            thumbnails.append(Thumbnail(quality: entry.quality, url: entry.url, width: entry.width, height: entry.height))
-        }
-        return thumbnails
-    }
-    
-    private static func getVideoStreams(streamArray streams: [InvidiousAdaptiveFormat]) -> [VideoStream] {
-        var videoStreams = [VideoStream]()
-        for stream in streams {
-            if stream.type.starts(with: "video") {
-                videoStreams.append(VideoStream(from: stream)!)
-            }
-        }
-        return videoStreams
-    }
-    
-    private static func getAudioStreams(streamArray streams: [InvidiousAdaptiveFormat]) -> [AudioStream] {
-        var audioStreams = [AudioStream]()
-        for stream in streams {
+        self.audioStreams = video.adaptiveFormats.compactMap { stream -> AudioStream? in
             if stream.type.starts(with: "audio") {
-                audioStreams.append(AudioStream(from: stream)!)
+                return AudioStream(from: stream)
             }
+            return nil
         }
-        return audioStreams
-    }
-    
-    private static func getCaptions(captionsArray: [InvidiousCaption]) -> [Caption] {
-        var captions = [Caption]()
-        for caption in captionsArray {
-            captions.append(Caption(from: caption))
+        self.videoStreams = video.adaptiveFormats.compactMap { stream -> VideoStream? in
+            if stream.type.starts(with: "video") {
+                return VideoStream(from: stream)
+            }
+            return nil
         }
-        return captions
-    }
-    
-    private static func getRecommendedVideos(videos: [InvidiousVideoPreview]) -> [VideoPreview.RecommendedVideo] {
-        var recommendedVideos = [VideoPreview.RecommendedVideo]()
-        for video in videos {
-            recommendedVideos.append(VideoPreview.RecommendedVideo(from: video))
-        }
-        return recommendedVideos
+        
+        self.captions = video.captions.map { Caption(from: $0) }
+        
+        self.recommendedVideos = video.recommendedVideos.map { VideoPreview.RecommendedVideo(from: $0) }
     }
     
     public let title: String

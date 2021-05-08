@@ -8,10 +8,14 @@
 
 import Foundation
 
+/// Object responsible for storing data about a channel previews
 public struct ChannelPreview {
     
+    /// Object that stores data of a related channel preview
     public struct Related {
         
+        /// Initializes RecommendedVideo from JSON decoded response
+        /// - Parameter related: JSON decoded response from Invidious
         internal init(from related: InvidiousChannel.RelatedChannel) {
             self.name = related.author
             self.id = related.authorId
@@ -25,13 +29,15 @@ public struct ChannelPreview {
         public let thumbnails: [Channel.Icon]
     }
     
+    /// Object that stores data of a channel preview that is returned from search.
     public struct SearchResult: Searchable, Identifiable {
         
         public var author: String { self.name }
         public var authorId: String { self.id }
         public var authorUrl: String { self.url }
         
-        
+        /// Initializes RecommendedVideo from JSON decoded response
+        /// - Parameter result: JSON decoded response from Invidious
         internal init(from result: InvidiousChannel.SearchResult) {
             self.name = result.author
             self.id = result.authorId

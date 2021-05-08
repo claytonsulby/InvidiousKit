@@ -8,6 +8,7 @@
 
 import Foundation
 
+/// Protocol that all items that can be returned from search conform to
 public protocol Searchable {
     
     var author: String { get }
@@ -16,8 +17,10 @@ public protocol Searchable {
     
 }
 
+/// Collection of enums that dictate how the search operation should be filtered
 public struct SearchOptions {
     
+    /// Dictates how the returned data should be sorted
     public enum Sorting: String {
         case relevance = "relevance"
         case rating = "rating"
@@ -25,6 +28,7 @@ public struct SearchOptions {
         case viewCount = "view_count"
     }
     
+    /// Filter that dictates, that only entries from a select timeframe are returned
     public enum Time: String {
         case lastHour = "hour"
         case today = "today"
@@ -33,11 +37,13 @@ public struct SearchOptions {
         case thisYear = "year"
     }
     
+    /// Dictates videos in what duration are allowed to be returned
     public enum Duration: String {
         case long = "long"
         case short = "short"
     }
     
+    /// Filter that dictates which result types are acceptable
     public enum AcceptableResultType: String {
         case video = "video"
         case playlist = "playlist"
@@ -45,6 +51,7 @@ public struct SearchOptions {
         case all = "all"
     }
     
+    /// Any additional features that may be requested
     public enum Feature: String {
         case hd = "hd"
         case hasSubtitles = "subtitles"

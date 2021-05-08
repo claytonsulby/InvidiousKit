@@ -8,8 +8,10 @@
 
 import Foundation
 
+/// Object responsible for storing thumbnail data
 public struct Thumbnail {
     
+    /// Quality of a given thumbnail
     public enum Quality: Equatable {
         
         case maxres
@@ -48,13 +50,21 @@ public struct Thumbnail {
         }
     }
     
-    init(_ thumbnail: InvidiousVideoThumbnail) {
+    /// Initializes Thumbnail from JSON decoded representiation
+    /// - Parameter thumbnail: JSON decoded response from Invidious
+    init(from thumbnail: InvidiousVideoThumbnail) {
         self.quality = Quality.fromString(quality: thumbnail.quality)
         self.url = URL(string: thumbnail.url)
         self.width = thumbnail.width
         self.height = thumbnail.height
     }
     
+    /// Default initializer
+    /// - Parameters:
+    ///   - quality: Quality label
+    ///   - url: URL String of the Thumbnail
+    ///   - width: Width of the image in px
+    ///   - height: Height of the image in px
     init(quality: String, url: String, width: Int32, height: Int32) {
         self.quality = Quality.fromString(quality: quality)
         self.url = URL(string: url)

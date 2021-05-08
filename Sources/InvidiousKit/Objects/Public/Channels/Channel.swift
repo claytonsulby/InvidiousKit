@@ -8,8 +8,10 @@
 
 import Foundation
 
+/// Object responsible for storing video data
 public struct Channel: Identifiable {
     
+    /// Filter that dictates, how vidoes should be sorted
     public enum SortDescriptor {
         case newest
         case oldest
@@ -27,6 +29,7 @@ public struct Channel: Identifiable {
         }
     }
     
+    /// Object responsible for storing channel icon data
     public struct Icon {
         
         internal init(from thumbnail: InvidiousAuthorThumbnail) {
@@ -40,6 +43,7 @@ public struct Channel: Identifiable {
         public let height: Int32
     }
     
+    /// Object responsible for storing channel banned data
     public struct Banner {
         
         internal init(from thumbnail: InvidiousAuthorBanner) {
@@ -53,6 +57,8 @@ public struct Channel: Identifiable {
         public let height: Int32
     }
     
+    /// Initializes Video from JSON decoded response
+    /// - Parameter channel: JSON decoded response from Invidious
     internal init(from channel: InvidiousChannel) {
         self.name = channel.author
         self.id = channel.authorId

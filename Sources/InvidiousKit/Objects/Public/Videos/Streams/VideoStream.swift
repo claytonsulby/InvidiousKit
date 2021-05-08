@@ -10,6 +10,8 @@ import Foundation
 
 public struct VideoStream {
     
+    /// Initializes VideoStream from JSON decoded reponse
+    /// - Parameter stream: JSON decoded response from Invidious
     internal init?(from stream: InvidiousAdaptiveFormat) {
         if !stream.type.starts(with: "video") {
             return nil

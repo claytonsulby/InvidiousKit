@@ -10,6 +10,8 @@ import Foundation
 
 public struct FormattedStream {
     
+    /// Initializes FormattedStream from JSON decoded reponse
+    /// - Parameter stream: JSON decoded response from Invidious
     internal init(from stream: InvidiousStreamFormat) {
         self.url = URL(string: stream.url)
         self.itag = stream.itag
@@ -20,14 +22,6 @@ public struct FormattedStream {
         self.qualityLabel = stream.qualityLabel
         self.resolution = stream.resolution
         self.size = stream.size
-    }
-    
-    internal static func fromStreamArray(streamArray: [InvidiousStreamFormat]) -> [Self] {
-        var streams = [Self]()
-        for stream in streamArray {
-            streams.append(Self(from: stream))
-        }
-        return streams
     }
     
     public let url: URL?

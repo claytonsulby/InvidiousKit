@@ -8,9 +8,14 @@
 
 import Foundation
 
+/// Object responsible for storing playlist data
 public struct Playlist: Identifiable {
+    
+    ///Object that stores the playlist preview which is returned from search
     public typealias SearchResult = ChannelPlaylist
     
+    /// Initializes Playlist from JSON decoded response
+    /// - Parameter playlist: JSON decoded response from Invidious
     internal init(from playlist: InvidiousPlaylist) {
         self.title = playlist.title
         self.id = playlist.playlistId
@@ -46,8 +51,11 @@ public struct Playlist: Identifiable {
     public let videos: [VideoPreview.PlaylistEntry]
 }
 
+/// Object responsible for storing playlist data
 public struct ChannelPlaylist: Searchable, Identifiable {
     
+    /// Initializes Playlist from JSON decoded response
+    /// - Parameter playlist: JSON decoded response from Invidious
     internal init(from playlist: InvidiousChannelPlaylist) {
         self.title = playlist.title
         self.id = playlist.playlistId

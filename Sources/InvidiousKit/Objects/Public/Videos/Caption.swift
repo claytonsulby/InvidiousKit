@@ -8,8 +8,11 @@
 
 import Foundation
 
+/// Objects responsible for storing caption data
 public struct Caption {
     
+    /// Initializes Caption from JSON decoded representiation
+    /// - Parameter caption: JSON decoded response from Invidious
     internal init(from caption: InvidiousCaption) {
         self.label = caption.label
         self.language = caption.languageCode

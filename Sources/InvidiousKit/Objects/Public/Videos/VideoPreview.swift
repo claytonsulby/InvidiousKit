@@ -8,15 +8,21 @@
 
 import Foundation
 
+/// Object responsible for storing data about a video previews
 public struct VideoPreview {
+    
+    ///Object that stores the Video preview that is returned from a search
     public typealias SearchResult = ChannelVideo
     
+    /// Object that stores data of a recommended video preview
     public struct RecommendedVideo: Identifiable {
         
+        /// Initializes RecommendedVideo from JSON decoded response
+        /// - Parameter video: JSON decoded response from Invidious
         internal init(from video: InvidiousVideoPreview) {
             self.id = video.videoId
             self.title = video.title
-            self.thumbnails = Video.getThumbnails(thumbnailsArray: video.videoThumbnails)
+            self.thumbnails = video.videoThumbnails.map { Thumbnail(from: $0) }
             self.author = video.author
             self.authorId = video.authorId
             self.lengthSeconds = video.lengthSeconds
@@ -34,12 +40,15 @@ public struct VideoPreview {
         public let viewCountText: String
     }
     
+    /// Object that store data of a popular video preview
     public struct PopularVideo: Identifiable {
         
+        /// Initializes PopularVideo from JSON decoded response
+        /// - Parameter video: JSON decoded response from Invidious
         internal init(from video: InvidiousVideoPreview.PopularVideo) {
             self.title = video.title
             self.id = video.videoId
-            self.thumbnails = video.videoThumbnails.map { Thumbnail($0) }
+            self.thumbnails = video.videoThumbnails.map { Thumbnail(from: $0) }
             
             self.lengthSeconds = video.lengthSeconds
             self.viewCount = video.viewCount
@@ -68,13 +77,16 @@ public struct VideoPreview {
         
     }
     
+    /// Object that stores data of a channel video preview, can be returned from search.
     public struct ChannelVideo: Searchable, Identifiable {
         
+        /// Initializes ChannelVideo from JSON decoded response
+        /// - Parameter video: JSON decoded response from Invidious
         internal init(from video: InvidiousVideoPreview.ChannelVideo) {
             self.type = video.type
             self.title = video.title
             self.id = video.videoId
-            self.thumbnails = video.videoThumbnails.map { Thumbnail($0) }
+            self.thumbnails = video.videoThumbnails.map { Thumbnail(from: $0) }
             
             self.lengthSeconds = video.lengthSeconds
             self.viewCount = video.viewCount
@@ -115,8 +127,11 @@ public struct VideoPreview {
         
     }
     
+    /// Object that stores data of a video playlist entry
     public struct PlaylistEntry {
         
+        /// Initializes PlaylistEntry from JSON decoded reponse
+        /// - Parameter entry: JSON decoded response from Invidious
         init(from entry: InvidiousVideoPreview.PlaylistEntry) {
             self.title = entry.title
             self.id = entry.title
@@ -127,7 +142,7 @@ public struct VideoPreview {
             self.index = entry.index
             self.lengthSeconds = entry.lengthSeconds
             
-            self.thumbnails = entry.videoThumbnails.map { Thumbnail($0) }
+            self.thumbnails = entry.videoThumbnails.map { Thumbnail(from: $0) }
         }
         
         let title: String
@@ -143,13 +158,16 @@ public struct VideoPreview {
         
     }
     
+    /// Object that stores data of a channel video playlist entry
     public struct ChannelPlaylistEntry: Identifiable {
         
+        /// Initializes ChannelPlaylistEntry from JSON decoded reponse
+        /// - Parameter entry: JSON decoded response from Invidious
         internal init(from entry: InvidiousVideoPreview.ChannelPlaylistEntry) {
             self.title = entry.title
             self.id = entry.videoId
             self.lengthSeconds = entry.lengthSeconds
-            self.thumbnails = entry.videoThumbnails.map { Thumbnail($0) }
+            self.thumbnails = entry.videoThumbnails.map { Thumbnail(from: $0) }
         }
         
         public let title: String
