@@ -3,7 +3,8 @@ import XCTest
 
 final class InvidiousKitTests: XCTestCase {
     let timeout = 15
-    lazy var invidious = Invidious(instance: "https://invidious.fdn.fr", requestTimeout: TimeInterval(timeout))
+//    lazy var invidious = Invidious(instance: "https://invidious.fdn.fr", requestTimeout: TimeInterval(timeout))
+    let invidious = Invidious.Cascading(instances: ["https://invidious.snopyta.org", "https://invidious.zee.li", "https://invidious.fdn.fr", "https://invidiou.site"], sessionTimeout: 3)
     
     let videoId = "1EEakkh4ZG4"
     let channelId = "linustechtips"
@@ -160,7 +161,7 @@ final class InvidiousKitTests: XCTestCase {
         
         invidious.getSearchSuggestions(searchQuery: "never gonna") { query, suggestions, error in
             XCTAssertNotNil(query)
-            XCTAssert(!suggestions!.isEmpty)
+            XCTAssert(!(suggestions?.isEmpty ?? false))
             XCTAssertNil(error)
             exp?.fulfill()
             exp = nil
