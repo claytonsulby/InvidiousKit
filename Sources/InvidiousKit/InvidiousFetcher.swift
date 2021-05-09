@@ -39,6 +39,11 @@ internal class InvidiousFetcher {
         let request = URLRequest(url: url, timeoutInterval: timeout)
         
         globalDataTask = URLSession.shared.dataTask(with: request) { optionalData, response, error in
+            if (error as? URLError)?.code == .timedOut {
+                callbackHandler(nil, .requestTimeout(data: optionalData))
+                return
+            }
+            
             if let error = error as? URLError {
                 callbackHandler(nil, .invalidDataReturned(message: "Error [\(String(describing: error.errorCode))]: \(String(describing: error.localizedDescription))", data: optionalData))
                 return
@@ -84,6 +89,11 @@ internal class InvidiousFetcher {
         let request = URLRequest(url: url, timeoutInterval: timeout)
         
         globalDataTask = URLSession.shared.dataTask(with: request) { optionalData, response, error in
+            if (error as? URLError)?.code == .timedOut {
+                callbackHandler(nil, .requestTimeout(data: optionalData))
+                return
+            }
+            
             if let error = error as? URLError {
                 callbackHandler(nil, .invalidDataReturned(message: "Error [\(String(describing: error.errorCode))]: \(String(describing: error.localizedDescription))", data: optionalData))
                 return
@@ -130,6 +140,11 @@ internal class InvidiousFetcher {
         let request = URLRequest(url: url, timeoutInterval: timeout)
         
         globalDataTask = URLSession.shared.dataTask(with: request) { optionalData, response, error in
+            if (error as? URLError)?.code == .timedOut {
+                callbackHandler(nil, .requestTimeout(data: optionalData))
+                return
+            }
+            
             if let error = error as? URLError {
                 callbackHandler(nil, .invalidDataReturned(message: "Error [\(String(describing: error.errorCode))]: \(String(describing: error.localizedDescription))", data: optionalData))
                 return
@@ -189,6 +204,11 @@ internal class InvidiousFetcher {
         let request = URLRequest(url: url, timeoutInterval: timeout)
         
         globalDataTask = URLSession.shared.dataTask(with: request) { optionalData, response, error in
+            if (error as? URLError)?.code == .timedOut {
+                callbackHandler(nil, .requestTimeout(data: optionalData))
+                return
+            }
+            
             if let error = error as? URLError {
                 callbackHandler(nil, .invalidDataReturned(message: "Error [\(String(describing: error.errorCode))]: \(String(describing: error.localizedDescription))", data: optionalData))
                 return
@@ -235,6 +255,11 @@ internal class InvidiousFetcher {
         let request = URLRequest(url: url, timeoutInterval: timeout)
         
         globalDataTask = URLSession.shared.dataTask(with: request) { optionalData, response, error in
+            if (error as? URLError)?.code == .timedOut {
+                callbackHandler(nil, .requestTimeout(data: optionalData))
+                return
+            }
+            
             if let error = error as? URLError {
                 callbackHandler(nil, .invalidDataReturned(message: "Error [\(String(describing: error.errorCode))]: \(String(describing: error.localizedDescription))", data: optionalData))
                 return
@@ -272,6 +297,11 @@ internal class InvidiousFetcher {
         let request = URLRequest(url: url, timeoutInterval: timeout)
         
         globalDataTask = URLSession.shared.dataTask(with: request) { optionalData, response, error in
+            if (error as? URLError)?.code == .timedOut {
+                callbackHandler(nil, .requestTimeout(data: optionalData))
+                return
+            }
+            
             if let error = error as? URLError {
                 callbackHandler(nil, .invalidDataReturned(message: "Error [\(String(describing: error.errorCode))]: \(String(describing: error.localizedDescription))", data: optionalData))
                 return
@@ -318,6 +348,11 @@ internal class InvidiousFetcher {
         let request = URLRequest(url: url, timeoutInterval: timeout)
         
         globalDataTask = URLSession.shared.dataTask(with: request) { optionalData, response, error in
+            if (error as? URLError)?.code == .timedOut {
+                callbackHandler(nil, .requestTimeout(data: optionalData))
+                return
+            }
+            
             if let error = error as? URLError {
                 callbackHandler(nil, .invalidDataReturned(message: "Error [\(String(describing: error.errorCode))]: \(String(describing: error.localizedDescription))", data: optionalData))
                 return
@@ -365,6 +400,11 @@ internal class InvidiousFetcher {
         let request = URLRequest(url: url, timeoutInterval: timeout)
         
         globalDataTask = URLSession.shared.dataTask(with: request) { optionalData, response, error in
+            if (error as? URLError)?.code == .timedOut {
+                callbackHandler(nil, .requestTimeout(data: optionalData))
+                return
+            }
+            
             if let error = error as? URLError {
                 callbackHandler(nil, .invalidDataReturned(message: "Error [\(String(describing: error.errorCode))]: \(String(describing: error.localizedDescription))", data: optionalData))
                 return
@@ -404,6 +444,11 @@ internal class InvidiousFetcher {
         let request = URLRequest(url: url, timeoutInterval: timeout)
         
         globalDataTask = URLSession.shared.dataTask(with: request) { optionalData, response, error in
+            if (error as? URLError)?.code == .timedOut {
+                callbackHandler(nil, .requestTimeout(data: optionalData))
+                return
+            }
+            
             if let error = error as? URLError {
                 callbackHandler(nil, .invalidDataReturned(message: "Error [\(String(describing: error.errorCode))]: \(String(describing: error.localizedDescription))", data: optionalData))
                 return
@@ -451,6 +496,11 @@ internal class InvidiousFetcher {
         let request = URLRequest(url: url, timeoutInterval: timeout)
         
         globalDataTask = URLSession.shared.dataTask(with: request) { optionalData, response, error in
+            if (error as? URLError)?.code == .timedOut {
+                callbackHandler(nil, .requestTimeout(data: optionalData))
+                return
+            }
+            
             if let error = error as? URLError {
                 callbackHandler(nil, .invalidDataReturned(message: "Error [\(String(describing: error.errorCode))]: \(String(describing: error.localizedDescription))", data: optionalData))
                 return
@@ -516,6 +566,11 @@ internal class InvidiousFetcher {
         let request = URLRequest(url: url, timeoutInterval: timeout)
         
         globalDataTask = URLSession.shared.dataTask(with: request) { optionalData, response, error in
+            if (error as? URLError)?.code == .timedOut {
+                callbackHandler(nil, .requestTimeout(data: optionalData))
+                return
+            }
+            
             if let error = error as? URLError {
                 callbackHandler(nil, .invalidDataReturned(message: "Error [\(String(describing: error.errorCode))]: \(String(describing: error.localizedDescription))", data: optionalData))
                 return
@@ -576,6 +631,11 @@ internal class InvidiousFetcher {
         let request = URLRequest(url: url, timeoutInterval: timeout)
         
         globalDataTask = URLSession.shared.dataTask(with: request) { optionalData, response, error in
+            if (error as? URLError)?.code == .timedOut {
+                callbackHandler(nil, .requestTimeout(data: optionalData))
+                return
+            }
+            
             if let error = error as? URLError {
                 callbackHandler(nil, .invalidDataReturned(message: "Error [\(String(describing: error.errorCode))]: \(String(describing: error.localizedDescription))", data: optionalData))
                 return
