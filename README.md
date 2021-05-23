@@ -22,9 +22,11 @@ let package = Package(
 
 ## Fetching data
 
-First create a `Invidious` object instance
+First create an `Invidious` object instance
 ```swift
-let invidious = Invidious.init(instance: "https://example.com", timeout: 20) //timeout in seconds, by default 15
+let invidious = Invidious(instance: "https://example.com", timeout: 20) //timeout in seconds, by default 15
+//you can create an Invidious.Cascading instance which will cascade instances (if fetch on instance 1 fails, switch to instance 2 and try again...)
+let invidious = Invidious.Cascading(instances: ["https://example.com", "https://example.net", "https://localhost"], sessionTimeout: 4)
 ```
 
 Fetching videos (**GET** `/api/v1/videos/:id`, **GET** `/api/v1/channels/videos/:ucid`)
@@ -33,7 +35,7 @@ invidious.getVideo(id: "dQw4w9WgXcQ") { video, error in
     print(video?.author) //Official Rick Astley
 }
 
-invidious.getChannelVideos(id: "UCuAXFkgsw1L7xaCfnd5JJOw"") { videos, error in
+invidious.getChannelVideos(id: "UCuAXFkgsw1L7xaCfnd5JJOw") { videos, error in
     print(videos?.first?.author) //Official Rick Astley
 }
 ```
