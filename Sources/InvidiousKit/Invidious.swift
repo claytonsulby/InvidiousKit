@@ -7,8 +7,30 @@
 
 
 import Foundation
+#if canImport(Combine)
+import Combine
+#endif
 
 public class Invidious {
+    
+    #if canImport(Combine)
+    @available(OSX 10.15, iOS 13.0, *)
+    public class CascadingCombine: Cascading {
+        
+        override public init(instances: [String], sessionTimeout timeout: TimeInterval = 5) {
+            self.instancesPublisher = instances
+            super.init(instances: instances, sessionTimeout: timeout)
+        }
+        
+        override public var instances: [String] {
+            didSet {
+                instancesPublisher = instances
+            }
+        }
+        
+        @Published public var instancesPublisher: [String]
+    }
+    #endif
     
     public class Cascading: Invidious {
         

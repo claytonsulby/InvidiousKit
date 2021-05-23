@@ -4,7 +4,7 @@ import XCTest
 final class InvidiousKitTests: XCTestCase {
     let timeout = 15
 //    lazy var invidious = Invidious(instance: "https://invidious.fdn.fr", requestTimeout: TimeInterval(timeout))
-    let invidious = Invidious.Cascading(instances: ["https://invidious.snopyta.org", "https://invidious.zee.li",  "https://invidiou.site", "https://invidious.fdn.fr"], sessionTimeout: 8)
+    let invidious = Invidious.CascadingCombine(instances: ["https://invidious.snopyta.org", "https://invidious.zee.li",  "https://invidiou.site", "https://invidious.fdn.fr"], sessionTimeout: 8)
     
     let videoId = "1EEakkh4ZG4"
     let channelId = "linustechtips"
