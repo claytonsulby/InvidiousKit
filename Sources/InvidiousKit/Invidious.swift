@@ -36,6 +36,18 @@ public class Invidious {
         
         public var instances: [String]
         
+        public override var instance: String {
+            get {
+                return instances.first!
+            }
+            
+            set {
+                instances.append(newValue)
+                swap(with: newValue)
+            }
+            
+        }
+        
         public init(instances: [String], sessionTimeout timeout: TimeInterval = 5) {
             self.instances = instances
             super.init(instance: instances.first!, requestTimeout: timeout)
@@ -298,8 +310,8 @@ public class Invidious {
         
     }
     
-    public let instance: String
-    public let timeout: TimeInterval
+    public var instance: String
+    public var timeout: TimeInterval
     
     private let fetcher: InvidiousFetcher
     
