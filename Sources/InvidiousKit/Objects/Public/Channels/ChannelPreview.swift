@@ -63,7 +63,7 @@ public struct ChannelPreview {
     }
 }
 
-protocol ChannelData {
+public protocol ChannelData {
     public let name: String
     public let id: String
     public let url: String

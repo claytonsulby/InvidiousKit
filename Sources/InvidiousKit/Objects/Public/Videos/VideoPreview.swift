@@ -178,7 +178,7 @@ public struct VideoPreview {
     }
 }
 
-protocol VideoData {
+public protocol VideoData {
     public let title: String
     public let thumbnails: [Thumbnail]
     public let author: String
