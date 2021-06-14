@@ -12,7 +12,7 @@ import Foundation
 public struct ChannelPreview {
     
     /// Object that stores data of a related channel preview
-    public struct Related {
+    public struct Related: ChannelData {
         
         /// Initializes RecommendedVideo from JSON decoded response
         /// - Parameter related: JSON decoded response from Invidious
@@ -30,7 +30,7 @@ public struct ChannelPreview {
     }
     
     /// Object that stores data of a channel preview that is returned from search.
-    public struct SearchResult: Searchable, Identifiable {
+    public struct SearchResult: Searchable, ChannelData, Identifiable {
         
         public var author: String { self.name }
         public var authorId: String { self.id }
@@ -61,4 +61,11 @@ public struct ChannelPreview {
         public let description: String
         public let descriptionHtml: String
     }
+}
+
+protocol ChannelData {
+    public let name: String
+    public let id: String
+    public let url: String
+    public let thumbnails: [Channel.Icon]
 }
