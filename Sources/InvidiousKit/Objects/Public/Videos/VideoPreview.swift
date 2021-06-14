@@ -15,7 +15,7 @@ public struct VideoPreview {
     public typealias SearchResult = ChannelVideo
     
     /// Object that stores data of a recommended video preview
-    public struct RecommendedVideo: Identifiable {
+    public struct RecommendedVideo: VideoData, Identifiable {
         
         /// Initializes RecommendedVideo from JSON decoded response
         /// - Parameter video: JSON decoded response from Invidious
@@ -41,7 +41,7 @@ public struct VideoPreview {
     }
     
     /// Object that store data of a popular video preview
-    public struct PopularVideo: Identifiable {
+    public struct PopularVideo: VideoData, Identifiable {
         
         /// Initializes PopularVideo from JSON decoded response
         /// - Parameter video: JSON decoded response from Invidious
@@ -78,7 +78,7 @@ public struct VideoPreview {
     }
     
     /// Object that stores data of a channel video preview, can be returned from search.
-    public struct ChannelVideo: Searchable, Identifiable {
+    public struct ChannelVideo: Searchable, VideoData, Identifiable {
         
         /// Initializes ChannelVideo from JSON decoded response
         /// - Parameter video: JSON decoded response from Invidious
@@ -128,7 +128,7 @@ public struct VideoPreview {
     }
     
     /// Object that stores data of a video playlist entry
-    public struct PlaylistEntry {
+    public struct PlaylistEntry: VideoData {
         
         /// Initializes PlaylistEntry from JSON decoded reponse
         /// - Parameter entry: JSON decoded response from Invidious
@@ -176,4 +176,12 @@ public struct VideoPreview {
         public let thumbnails: [Thumbnail]
         
     }
+}
+
+protocol VideoData {
+    public let title: String
+    public let thumbnails: [Thumbnail]
+    public let author: String
+    public let authorId: String
+    public let lengthSeconds: Int32
 }
