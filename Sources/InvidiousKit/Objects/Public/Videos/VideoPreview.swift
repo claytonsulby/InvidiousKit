@@ -145,16 +145,16 @@ public struct VideoPreview {
             self.thumbnails = entry.videoThumbnails.map { Thumbnail(from: $0) }
         }
         
-        let title: String
-        let id: String
-        let author: String
-        let authorId: String
-        let authorUrl: String
+        public let title: String
+        public let id: String
+        public let author: String
+        public let authorId: String
+        public let authorUrl: String
         
-        let index: Int32
-        let lengthSeconds: Int32
+        public let index: Int32
+        public let lengthSeconds: Int32
         
-        let thumbnails: [Thumbnail]
+        public let thumbnails: [Thumbnail]
         
     }
     
@@ -179,9 +179,9 @@ public struct VideoPreview {
 }
 
 public protocol VideoData {
-    public let title: String
-    public let thumbnails: [Thumbnail]
-    public let author: String
-    public let authorId: String
-    public let lengthSeconds: Int32
+    var title: String { get }
+    var thumbnails: [Thumbnail] { get }
+    var author: String { get }
+    var authorId: String { get }
+    var lengthSeconds: Int32 { get }
 }

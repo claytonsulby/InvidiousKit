@@ -64,8 +64,8 @@ public struct ChannelPreview {
 }
 
 public protocol ChannelData {
-    public let name: String
-    public let id: String
-    public let url: String
-    public let thumbnails: [Channel.Icon]
+    var name: String { get }
+    var id: String { get }
+    var url: String { get }
+    var thumbnails: [Channel.Icon] { get }
 }
