@@ -21,7 +21,7 @@ public protocol Searchable {
 public struct SearchOptions {
     
     /// Dictates how the returned data should be sorted
-    public enum Sorting: String {
+    public enum Sorting: String, CaseIterable {
         case relevance = "relevance"
         case rating = "rating"
         case uploadDate = "upload_date"
@@ -29,7 +29,7 @@ public struct SearchOptions {
     }
     
     /// Filter that dictates, that only entries from a select timeframe are returned
-    public enum Time: String {
+    public enum Time: String, CaseIterable {
         case lastHour = "hour"
         case today = "today"
         case thisWeek = "week"
@@ -38,13 +38,13 @@ public struct SearchOptions {
     }
     
     /// Dictates videos in what duration are allowed to be returned
-    public enum Duration: String {
+    public enum Duration: String, CaseIterable {
         case long = "long"
         case short = "short"
     }
     
     /// Filter that dictates which result types are acceptable
-    public enum AcceptableResultType: String {
+    public enum AcceptableResultType: String, CaseIterable {
         case video = "video"
         case playlist = "playlist"
         case channel = "channel"
@@ -52,7 +52,7 @@ public struct SearchOptions {
     }
     
     /// Any additional features that may be requested
-    public enum Feature: String {
+    public enum Feature: String, CaseIterable {
         case hd = "hd"
         case hasSubtitles = "subtitles"
         case creativeCommons = "creative_commons"
