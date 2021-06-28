@@ -180,6 +180,7 @@ public struct VideoPreview {
 
 public protocol VideoData {
     var title: String { get }
+    var id: String { get }
     var thumbnails: [Thumbnail] { get }
     var author: String { get }
     var authorId: String { get }
