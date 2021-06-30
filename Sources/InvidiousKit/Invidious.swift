@@ -292,7 +292,7 @@ public class Invidious {
             var counter = 0
             instances.forEach { instance in
                 let temporaryFetcher = InvidiousFetcher(instance: instance, timeout: super.timeout)
-                temporaryFetcher.fetchPlaylist(playlistId: id) { [weak self] playlist, error in
+                temporaryFetcher.fetchPlaylist(playlistId: id, page: page) { [weak self] playlist, error in
                     if let playlist = playlist {
                         completionHandler(Playlist(from: playlist), error)
                         self?.swap(with: instance)
@@ -510,7 +510,7 @@ public class Invidious {
     ///   - id: Playlist id
     ///   - completionHandler: Closure called when the fetch is completed, contains optional `Playlist` and `InvidiousError` objects
     public func getPlaylist(id: String, page: Int = 1, completionHandler: @escaping (Playlist?, InvidiousError?) -> Void) {
-        fetcher.fetchPlaylist(playlistId: id) { playlist, error in
+        fetcher.fetchPlaylist(playlistId: id, page: page) { playlist, error in
             if let playlist = playlist {
                 completionHandler(Playlist(from: playlist), error)
                 return
