@@ -60,7 +60,7 @@ public class Invidious {
         }
         
         public override func getVideo(id: String, completionHandler: @escaping (Video?, InvidiousError?) -> Void) {
-            var counter = 1
+            var counter = 0
             instances.forEach { instance in
                 let temporaryFetcher = InvidiousFetcher(instance: instance, timeout: super.timeout)
                 temporaryFetcher.fetchVideo(videoId: id) { [weak self] video, error in
@@ -80,7 +80,7 @@ public class Invidious {
         }
         
         public override func getVideoComments(id: String, completionHandler: @escaping (Int32?, [Comment]?, String?, InvidiousError?) -> Void) {
-            var counter = 1
+            var counter = 0
             instances.forEach { instance in
                 let temporaryFetcher = InvidiousFetcher(instance: instance, timeout: super.timeout)
                 temporaryFetcher.fetchComments(videoId: id) { [weak self] comments, error in
@@ -99,7 +99,7 @@ public class Invidious {
         }
         
         public override func getCaptions(id: String, completionHandler: @escaping ([Caption]?, InvidiousError?) -> Void) {
-            var counter = 1
+            var counter = 0
             instances.forEach { instance in
                 let temporaryFetcher = InvidiousFetcher(instance: instance, timeout: super.timeout)
                 temporaryFetcher.fetchCaptions(videoId: id) { [weak self] captions, error in
@@ -118,7 +118,7 @@ public class Invidious {
         }
         
         public override func getTrendingVideos(type: String? = nil, regionCode region: String? = nil, completionHandler: @escaping ([VideoPreview.ChannelVideo]?, InvidiousError?) -> Void) {
-            var counter = 1
+            var counter = 0
             instances.forEach { instance in
                 let temporaryFetcher = InvidiousFetcher(instance: instance, timeout: super.timeout)
                 temporaryFetcher.fetchTrending(type: type, region: region) { [weak self] videos, error in
@@ -138,7 +138,7 @@ public class Invidious {
         }
         
         public override func getPopularVideos(completionHandler: @escaping ([VideoPreview.PopularVideo]?, InvidiousError?) -> Void) {
-            var counter = 1
+            var counter = 0
             instances.forEach { instance in
                 let temporaryFetcher = InvidiousFetcher(instance: instance, timeout: super.timeout)
                 temporaryFetcher.fetchPopular { [weak self] videos, error in
@@ -158,7 +158,7 @@ public class Invidious {
         }
         
         public override func getChannel(id: String, sortedBy sort: Channel.SortDescriptor = .newest, completionHandler: @escaping (Channel?, InvidiousError?) -> Void) {
-            var counter = 1
+            var counter = 0
             instances.forEach { instance in
                 let temporaryFetcher = InvidiousFetcher(instance: instance, timeout: super.timeout)
                 temporaryFetcher.fetchChannel(channelId: id) { [weak self] channel, error in
@@ -178,7 +178,7 @@ public class Invidious {
         }
         
         public override func getChannelVideos(id: String, sortedBy sort: Channel.SortDescriptor = .newest, completionHandler: @escaping ([VideoPreview.ChannelVideo]?, InvidiousError?) -> Void) {
-            var counter = 1
+            var counter = 0
             instances.forEach { instance in
                 let temporaryFetcher = InvidiousFetcher(instance: instance, timeout: super.timeout)
                 temporaryFetcher.fetchChannelVideos(channelId: id) { [weak self] videos, error in
@@ -198,7 +198,7 @@ public class Invidious {
         }
         
         public override func getChannelPlaylists(id: String, sortedBy sort: Channel.SortDescriptor, continuation: String? = nil, completionHandler: @escaping ([ChannelPlaylist]?, String?, InvidiousError?) -> Void) {
-            var counter = 1
+            var counter = 0
             instances.forEach { instance in
                 let temporaryFetcher = InvidiousFetcher(instance: instance, timeout: super.timeout)
                 temporaryFetcher.fetchChannelPlaylists(channelId: id) { [weak self] reference, error in
@@ -218,7 +218,7 @@ public class Invidious {
         }
         
         public override func getChannelComments(id: String, completionHandler: @escaping ([Comment]?, String?, InvidiousError?) -> Void) {
-            var counter = 1
+            var counter = 0
             instances.forEach { instance in
                 let temporaryFetcher = InvidiousFetcher(instance: instance, timeout: super.timeout)
                 temporaryFetcher.fetchChannelComments(channelId: id) { [weak self] reference, error in
@@ -238,7 +238,7 @@ public class Invidious {
         }
         
         public override func getSearchSuggestions(searchQuery query: String, completionHandler: @escaping (String?, [String]?, InvidiousError?) -> Void) {
-            var counter = 1
+            var counter = 0
             instances.forEach { instance in
                 let temporaryFetcher = InvidiousFetcher(instance: instance, timeout: super.timeout)
                 temporaryFetcher.fetchSearchSuggestions(searchQuery: query) { [weak self] reference, error in
@@ -258,7 +258,7 @@ public class Invidious {
         }
         
         public override func getSearchResults(searchQuery query: String, page: Int = 1, sortedBy sort: SearchOptions.Sorting? = nil, sortedByTime time: SearchOptions.Time? = nil, duration: SearchOptions.Duration? = nil, expectedResultType type: SearchOptions.AcceptableResultType = .all, expectedFeatures features: [SearchOptions.Feature]? = nil, searchRegion region: String? = nil, completionHandler: @escaping ([Searchable]?, InvidiousError?) -> Void) {
-            var counter = 1
+            var counter = 0
             instances.forEach { instance in
                 let temporaryFetcher = InvidiousFetcher(instance: instance, timeout: super.timeout)
                 temporaryFetcher.fetchSearchResults(searchQuery: query, page: Int32(page), soryBy: sort?.rawValue, timeSort: time?.rawValue, duration: duration?.rawValue, type: type.rawValue, features: features?.map { $0.rawValue }, region: region) { [weak self] searchResults, error in
@@ -289,7 +289,7 @@ public class Invidious {
         }
         
         public override func getPlaylist(id: String, page: Int = 1, completionHandler: @escaping (Playlist?, InvidiousError?) -> Void) {
-            var counter = 1
+            var counter = 0
             instances.forEach { instance in
                 let temporaryFetcher = InvidiousFetcher(instance: instance, timeout: super.timeout)
                 temporaryFetcher.fetchPlaylist(playlistId: id, page: page) { [weak self] playlist, error in
