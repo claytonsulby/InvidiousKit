@@ -20,6 +20,8 @@ public struct Playlist: Identifiable {
         self.title = playlist.title
         self.id = playlist.playlistId
         
+        self.thumbnailUrl = playlist.playlistThumbnail
+        
         self.author = playlist.author
         self.authorId = playlist.authorId
         self.authorThumbnails = playlist.authorThumbnails.map { Channel.Icon(from: $0) }
@@ -37,6 +39,8 @@ public struct Playlist: Identifiable {
     public let title: String
     public let id: String
 
+    public let thumbnailUrl: String
+    
     public let author: String
     public let authorId: String
     public let authorThumbnails: [Channel.Icon]
@@ -60,6 +64,8 @@ public struct ChannelPlaylist: Searchable, Identifiable {
         self.title = playlist.title
         self.id = playlist.playlistId
         
+        self.thumbnailUrl = playlist.playlistThumbnail
+        
         self.author = playlist.author
         self.authorId = playlist.authorId
         self.authorUrl = playlist.authorUrl
@@ -71,6 +77,8 @@ public struct ChannelPlaylist: Searchable, Identifiable {
     public let title: String
     public let id: String
 
+    public let thumbnailUrl: String
+    
     public let author: String
     public let authorId: String
     public let authorUrl: String

@@ -12,6 +12,7 @@ public struct InvidiousPlaylist: Codable {
     
     let title: String
     let playlistId: String
+    let playlistThumbnail: String
     
     let author: String
     let authorId: String
@@ -31,6 +32,7 @@ public struct InvidiousChannelPlaylist: Codable {
     
     let title: String
     let playlistId: String
+    let playlistThumbnail: String
     let author: String
     let authorId: String
     let authorUrl: String
