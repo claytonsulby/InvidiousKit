@@ -27,6 +27,9 @@ public struct ChannelPreview {
         public let id: String
         public let url: String
         public let thumbnails: [Channel.Icon]
+        
+        public var subCount: Int32 = 0
+        public var description: String = ""
     }
     
     /// Object that stores data of a channel preview that is returned from search.
@@ -68,4 +71,6 @@ public protocol ChannelData {
     var id: String { get }
     var url: String { get }
     var thumbnails: [Channel.Icon] { get }
+    var subCount: Int32 { get }
+    var description: String { get }
 }

@@ -9,7 +9,7 @@
 import Foundation
 
 /// Object responsible for storing video data
-public struct Channel: Identifiable {
+public struct Channel: ChannelData, Identifiable {
     
     /// Filter that dictates, how vidoes should be sorted
     public enum SortDescriptor {
