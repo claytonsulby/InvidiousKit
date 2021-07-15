@@ -108,7 +108,7 @@ public struct Video: Identifiable {
     
     public let recommendedVideos: [VideoPreview.RecommendedVideo]
     
-    func getVideoData() -> VideoData {
+    public func getVideoData() -> VideoData {
         return VideoPreview.PlaylistEntry.init(title: title, id: id, author: author.name, authorId: author.id, authorUrl: author.url, index: 0, lengthSeconds: length, thumbnails: thumbnails)
     }
 
