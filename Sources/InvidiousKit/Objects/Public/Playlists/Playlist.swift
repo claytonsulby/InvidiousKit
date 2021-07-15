@@ -87,7 +87,7 @@ public struct ChannelPlaylist: Searchable, PlaylistData, Identifiable {
     
 }
 
-protocol PlaylistData {
+public protocol PlaylistData {
     var title: String { get }
     var id: String { get }
     var author: String { get }
