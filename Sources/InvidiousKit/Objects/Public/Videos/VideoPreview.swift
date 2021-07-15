@@ -145,6 +145,18 @@ public struct VideoPreview {
             self.thumbnails = entry.videoThumbnails.map { Thumbnail(from: $0) }
         }
         
+        internal init(title: String, id: String, author: String, authorId: String, authorUrl: String, index: Int32, lengthSeconds: Int32, thumbnails: [Thumbnail]) {
+            self.title = title
+            self.id = id
+            self.author = author
+            self.authorId = authorId
+            self.authorUrl = authorUrl
+            
+            self.index = index
+            self.lengthSeconds = lengthSeconds
+            self.thumbnails = thumbnails
+        }
+        
         public let title: String
         public let id: String
         public let author: String
