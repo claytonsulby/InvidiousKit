@@ -90,7 +90,7 @@ public struct ChannelPlaylist: Searchable, PlaylistData, Identifiable {
 public protocol PlaylistData {
     var title: String { get }
     var id: String { get }
-    var thumbnailUrl { get }
+    var thumbnailUrl: String { get }
     var author: String { get }
     var authorId: String { get }
     var videoCount: Int32 { get }
