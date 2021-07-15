@@ -9,8 +9,7 @@
 import Foundation
 
 /// Object responsible for storing playlist data
-public struct Playlist: Identifiable {
-    
+public struct Playlist: Identifiable, PlaylistData {
     ///Object that stores the playlist preview which is returned from search
     public typealias SearchResult = ChannelPlaylist
     
@@ -56,7 +55,7 @@ public struct Playlist: Identifiable {
 }
 
 /// Object responsible for storing playlist data
-public struct ChannelPlaylist: Searchable, Identifiable {
+public struct ChannelPlaylist: Searchable, PlaylistData, Identifiable {
     
     /// Initializes Playlist from JSON decoded response
     /// - Parameter playlist: JSON decoded response from Invidious
@@ -88,3 +87,10 @@ public struct ChannelPlaylist: Searchable, Identifiable {
     
 }
 
+protocol PlaylistData {
+    var title: String { get }
+    var id: String { get }
+    var author: String { get }
+    var authorId: String { get }
+    var videoCount: Int32 { get }
+}
