@@ -109,7 +109,7 @@ public struct Video: Identifiable {
     public let recommendedVideos: [VideoPreview.RecommendedVideo]
     
     public func getVideoData() -> VideoData {
-        return VideoPreview.PlaylistEntry.init(title: title, id: id, author: author.name, authorId: author.id, authorUrl: author.url, index: 0, lengthSeconds: length, thumbnails: thumbnails)
+        return VideoPreview.PopularVideo(title: title, id: id, author: author.name, authorId: author.id, authorUrl: author.url, lenght: length, viewCount: views, published: (published.timeIntervalSince1970 as? Int64) ?? 0, publishedText: publishedText, thumbnails: thumbnails)
     }
 
 }

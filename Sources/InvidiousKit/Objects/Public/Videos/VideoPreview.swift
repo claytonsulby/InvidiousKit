@@ -61,6 +61,19 @@ public struct VideoPreview {
             self.publishedText = video.publishedText
         }
         
+        internal init(title: String, id: String, author: String, authorId: String, authorUrl: String, lenght: Int32, viewCount: Int64, published: Int64, publishedText: String, thumbnails: [Thumbnail]) {
+            self.title = title
+            self.id = id
+            self.author = author
+            self.authorId = authorId
+            self.authorUrl = authorUrl
+            self.lengthSeconds = lenght
+            self.viewCount = viewCount
+            self.published = published
+            self.publishedText = publishedText
+            self.thumbnails = thumbnails
+        }
+        
         public let title: String
         public let id: String
         public let thumbnails: [Thumbnail]
@@ -143,18 +156,6 @@ public struct VideoPreview {
             self.lengthSeconds = entry.lengthSeconds
             
             self.thumbnails = entry.videoThumbnails.map { Thumbnail(from: $0) }
-        }
-        
-        internal init(title: String, id: String, author: String, authorId: String, authorUrl: String, index: Int32, lengthSeconds: Int32, thumbnails: [Thumbnail]) {
-            self.title = title
-            self.id = id
-            self.author = author
-            self.authorId = authorId
-            self.authorUrl = authorUrl
-            
-            self.index = index
-            self.lengthSeconds = lengthSeconds
-            self.thumbnails = thumbnails
         }
         
         public let title: String
