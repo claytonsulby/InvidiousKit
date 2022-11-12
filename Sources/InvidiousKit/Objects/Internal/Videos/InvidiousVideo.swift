@@ -10,11 +10,13 @@ import Foundation
 
 struct InvidiousVideo: Codable {
 
+    let error: String?
+    
     let type: String
     let title: String
     let videoId: String
     let videoThumbnails: [InvidiousVideoThumbnail]
-    let error: String?
+    let storyboards: [InvidiousStoryboard]
     
     let description: String
     let descriptionHtml: String
@@ -28,6 +30,7 @@ struct InvidiousVideo: Codable {
     
     let paid: Bool
     let premium: Bool
+    let isFamilyFriendly: Bool
     let allowedRegions: [String]
     let genre: String
     let genreUrl: String?
@@ -51,4 +54,17 @@ struct InvidiousVideo: Codable {
     let formatStreams: [InvidiousStreamFormat]
     let captions: [InvidiousCaption]
     let recommendedVideos: [InvidiousVideoPreview]
+}
+
+// MARK: - Storyboard
+struct InvidiousStoryboard: Codable {
+    let url: String
+    let templateUrl: String
+    let width: Int32
+    let height: Int32
+    let count: Int64
+    let interval: Int64
+    let storyboardWidth: Int32
+    let storyboardHeight: Int32
+    let storyboardCount: Int64
 }

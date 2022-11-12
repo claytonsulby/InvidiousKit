@@ -113,8 +113,8 @@ public struct VideoPreview {
             self.descriptionHtml = video.descriptionHtml
             
             self.liveNow = video.liveNow
-            self.paid = video.paid
             self.premium = video.premium
+            self.isUpcoming = video.isUpcoming
         }
         
         public let type: String
@@ -135,8 +135,8 @@ public struct VideoPreview {
         public let descriptionHtml: String
         
         public let liveNow: Bool
-        public let paid: Bool
         public let premium: Bool
+        public let isUpcoming: Bool
         
     }
     

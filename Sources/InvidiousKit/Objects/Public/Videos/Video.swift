@@ -10,7 +10,7 @@ import Foundation
 
 /// Object responsible for storing video data
 public struct Video: Identifiable {
-    
+
     /// Initializes Video from JSON decoded response
     /// - Parameter video: JSON decoded response from Invidious
     internal init(from video: InvidiousVideo) {

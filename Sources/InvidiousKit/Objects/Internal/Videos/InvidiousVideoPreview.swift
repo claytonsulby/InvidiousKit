@@ -15,9 +15,10 @@ struct InvidiousVideoPreview: Codable {
     let videoThumbnails: [InvidiousVideoThumbnail]
     let author: String
     let authorId: String
+    let authorUrl: String
     let lengthSeconds: Int32
-    let viewCount: Int64
     let viewCountText: String
+    let viewCount: Int64
     
     struct ChannelVideo: Codable {
         
@@ -39,8 +40,8 @@ struct InvidiousVideoPreview: Codable {
         let descriptionHtml: String
         
         let liveNow: Bool
-        let paid: Bool
         let premium: Bool
+        let isUpcoming: Bool
     }
     
     struct PopularVideo: Codable {

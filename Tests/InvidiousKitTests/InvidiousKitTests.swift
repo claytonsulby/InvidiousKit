@@ -1,6 +1,7 @@
 import XCTest
 @testable import InvidiousKit
 
+@available(iOS 13.0, *)
 final class InvidiousKitTests: XCTestCase {
     let timeout = 15
 //    lazy var invidious = Invidious(instance: "https://invidious.fdn.fr", requestTimeout: TimeInterval(timeout))

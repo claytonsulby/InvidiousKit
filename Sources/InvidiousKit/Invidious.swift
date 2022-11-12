@@ -167,7 +167,7 @@ public class Invidious {
                         self?.swap(with: instance)
                         return
                     } else {
-                        if counter == self!.instances.count - 1 {
+                        if counter == (self?.instances.count ?? 0) - 1 {
                             completionHandler(nil, error)
                             return
                         }
