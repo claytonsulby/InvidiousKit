@@ -14,6 +14,9 @@ public protocol Searchable {
     var author: String { get }
     var authorId: String { get }
     var authorUrl: String { get }
+    var id: String { get }
+    var title: String { get }
+    var type:SearchOptions.AcceptableResultType { get }
     
 }
 

@@ -92,11 +92,13 @@ public struct VideoPreview {
     
     /// Object that stores data of a channel video preview, can be returned from search.
     public struct ChannelVideo: Searchable, VideoData, Identifiable {
+        public var type: SearchOptions.AcceptableResultType { SearchOptions.AcceptableResultType.video }
+        
         
         /// Initializes ChannelVideo from JSON decoded response
         /// - Parameter video: JSON decoded response from Invidious
         internal init(from video: InvidiousVideoPreview.ChannelVideo) {
-            self.type = video.type
+//            self.type = video.type
             self.title = video.title
             self.id = video.videoId
             self.thumbnails = video.videoThumbnails.map { Thumbnail(from: $0) }
@@ -117,7 +119,9 @@ public struct VideoPreview {
             self.isUpcoming = video.isUpcoming
         }
         
-        public let type: String
+        
+        
+//        public let type: String
         public let title: String
         public let id: String
         public let thumbnails: [Thumbnail]
@@ -147,7 +151,7 @@ public struct VideoPreview {
         /// - Parameter entry: JSON decoded response from Invidious
         init(from entry: InvidiousVideoPreview.PlaylistEntry) {
             self.title = entry.title
-            self.id = entry.title
+            self.id = entry.videoId
             self.author = entry.author
             self.authorId = entry.authorId
             self.authorUrl = entry.authorUrl

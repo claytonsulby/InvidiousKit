@@ -56,7 +56,8 @@ public struct Playlist: Identifiable, PlaylistData {
 
 /// Object responsible for storing playlist data
 public struct ChannelPlaylist: Searchable, PlaylistData, Identifiable {
-    
+    public var type: SearchOptions.AcceptableResultType { SearchOptions.AcceptableResultType.playlist }
+
     /// Initializes Playlist from JSON decoded response
     /// - Parameter playlist: JSON decoded response from Invidious
     internal init(from playlist: InvidiousChannelPlaylist) {
