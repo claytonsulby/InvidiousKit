@@ -34,7 +34,9 @@ public struct ChannelPreview {
     
     /// Object that stores data of a channel preview that is returned from search.
     public struct SearchResult: Searchable, ChannelData, Identifiable {
+        public var title: String { self.name }
         
+        public var type: SearchOptions.AcceptableResultType { SearchOptions.AcceptableResultType.channel }
         public var author: String { self.name }
         public var authorId: String { self.id }
         public var authorUrl: String { self.url }
