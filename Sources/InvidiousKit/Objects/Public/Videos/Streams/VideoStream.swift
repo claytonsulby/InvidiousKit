@@ -18,7 +18,7 @@ public struct VideoStream {
         } else {
             self.index = stream.index
             self.bitrate = stream.bitrate
-            self.url = stream.url
+            self.url = URL(string: stream.url)
             self.itag = stream.itag
             self.type = stream.type
             self.clen = stream.clen
@@ -57,9 +57,9 @@ public struct VideoStream {
         }
     }
     
-    public let index: String
+    public let index: String?
     public let bitrate: String
-    public let url: String
+    public let url: URL?
     public let itag: String
     public let type: String
     public let clen: String

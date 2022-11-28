@@ -50,7 +50,7 @@ public class Invidious {
         
         public init(instances: [String], sessionTimeout timeout: TimeInterval = 5) {
             self.instances = instances
-            super.init(instance: instances.first!, requestTimeout: timeout)
+            super.init(instance: instances.first ?? "", requestTimeout: timeout)
         }
         
         private func swap(with instance: String) {
@@ -59,21 +59,46 @@ public class Invidious {
             }
         }
         
+        //Succeeds at parallelism, fails because it waits for all instances to complete
+        /*
+         public override func getVideo(id: String, completionHandler: @escaping (Video?, InvidiousError?) -> Void) {
+             var flag = false
+
+             let group = DispatchGroup()
+             group.enter()
+             
+             DispatchQueue.concurrentPerform(iterations: instances.count) { (index) in
+                 
+                 let instance = instances[index]
+                 let temporaryFetcher = InvidiousFetcher(instance: instance, timeout: super.timeout)
+                 
+                 temporaryFetcher.fetchVideo(videoId: id) { [weak self] video, error in
+                     if let video = video {
+                         if flag == false {
+                             completionHandler(Video(from: video), error)
+                             flag = true
+                             print("WINNER: " + instance)
+                             group.leave()
+                             return
+                         }
+                         print("COMPLETED: " + instance)
+                     }
+                     print("COMPLETED: " + instance)
+                 }
+             }
+         }
+         */
+        
         public override func getVideo(id: String, completionHandler: @escaping (Video?, InvidiousError?) -> Void) {
-            var counter = 0
+            var flag = false
             instances.forEach { instance in
                 let temporaryFetcher = InvidiousFetcher(instance: instance, timeout: super.timeout)
-                temporaryFetcher.fetchVideo(videoId: id) { [weak self] video, error in
+                temporaryFetcher.fetchVideo(videoId: id) { video, error in
                     if let video = video {
-                        completionHandler(Video(from: video), error)
-                        self?.swap(with: instance)
-                        return
-                    } else {
-                        if counter == self!.instances.count - 1 {
-                            completionHandler(nil, error)
-                            return
+                        if flag == false {
+                            completionHandler(Video(from: video), error)
+                            flag = true
                         }
-                        counter += 1
                     }
                 }
             }
@@ -158,60 +183,45 @@ public class Invidious {
         }
         
         public override func getChannel(id: String, sortedBy sort: Channel.SortDescriptor = .newest, completionHandler: @escaping (Channel?, InvidiousError?) -> Void) {
-            var counter = 0
+            var flag = false
             instances.forEach { instance in
                 let temporaryFetcher = InvidiousFetcher(instance: instance, timeout: super.timeout)
-                temporaryFetcher.fetchChannel(channelId: id) { [weak self] channel, error in
+                temporaryFetcher.fetchChannel(channelId: id) { channel, error in
                     if let channel = channel {
-                        completionHandler(Channel(from: channel), error)
-                        self?.swap(with: instance)
-                        return
-                    } else {
-                        if counter == (self?.instances.count ?? 0) - 1 {
-                            completionHandler(nil, error)
-                            return
+                        if flag == false {
+                            flag = true
+                            completionHandler(Channel(from: channel), error)
                         }
-                        counter += 1
                     }
                 }
             }
         }
         
         public override func getChannelVideos(id: String, sortedBy sort: Channel.SortDescriptor = .newest, completionHandler: @escaping ([VideoPreview.ChannelVideo]?, InvidiousError?) -> Void) {
-            var counter = 0
+            var flag = false
             instances.forEach { instance in
                 let temporaryFetcher = InvidiousFetcher(instance: instance, timeout: super.timeout)
-                temporaryFetcher.fetchChannelVideos(channelId: id) { [weak self] videos, error in
+                temporaryFetcher.fetchChannelVideos(channelId: id) { videos, error in
                     if let videos = videos {
-                        completionHandler(videos.map { VideoPreview.ChannelVideo(from: $0) }, error)
-                        self?.swap(with: instance)
-                        return
-                    } else {
-                        if counter == self!.instances.count - 1 {
-                            completionHandler(nil, error)
-                            return
+                        if flag == false {
+                            flag = true
+                            completionHandler(videos.map { VideoPreview.ChannelVideo(from: $0) }, error)
                         }
-                        counter += 1
                     }
                 }
             }
         }
         
         public override func getChannelPlaylists(id: String, sortedBy sort: Channel.SortDescriptor, continuation: String? = nil, completionHandler: @escaping ([ChannelPlaylist]?, String?, InvidiousError?) -> Void) {
-            var counter = 0
+            var flag = false
             instances.forEach { instance in
                 let temporaryFetcher = InvidiousFetcher(instance: instance, timeout: super.timeout)
-                temporaryFetcher.fetchChannelPlaylists(channelId: id) { [weak self] reference, error in
+                temporaryFetcher.fetchChannelPlaylists(channelId: id) { reference, error in
                     if let reference = reference {
-                        completionHandler(reference.playlists.map { ChannelPlaylist(from: $0) }, reference.continuation, error)
-                        self?.swap(with: instance)
-                        return
-                    } else {
-                        if counter == self!.instances.count - 1  {
-                            completionHandler(nil, nil, error)
-                            return
+                        if flag == false {
+                            flag = true
+                            completionHandler(reference.playlists.map { ChannelPlaylist(from: $0) }, reference.continuation, error)
                         }
-                        counter += 1
                     }
                 }
             }
@@ -238,30 +248,25 @@ public class Invidious {
         }
         
         public override func getSearchSuggestions(searchQuery query: String, completionHandler: @escaping (String?, [String]?, InvidiousError?) -> Void) {
-            var counter = 0
+            var flag = false
             instances.forEach { instance in
                 let temporaryFetcher = InvidiousFetcher(instance: instance, timeout: super.timeout)
-                temporaryFetcher.fetchSearchSuggestions(searchQuery: query) { [weak self] reference, error in
+                temporaryFetcher.fetchSearchSuggestions(searchQuery: query) { reference, error in
                     if let reference = reference {
-                        completionHandler(reference.query, reference.suggestions, error)
-                        self?.swap(with: instance)
-                        return
-                    } else {
-                        if counter == self!.instances.count - 1 {
-                            completionHandler(nil, nil, error)
-                            return
+                        if flag == false {
+                            flag = true
+                            completionHandler(reference.query, reference.suggestions, error)
                         }
-                        counter += 1
                     }
                 }
             }
         }
         
         public override func getSearchResults(searchQuery query: String, page: Int = 1, sortedBy sort: SearchOptions.Sorting? = nil, sortedByTime time: SearchOptions.Time? = nil, duration: SearchOptions.Duration? = nil, expectedResultType type: SearchOptions.AcceptableResultType = .all, expectedFeatures features: [SearchOptions.Feature]? = nil, searchRegion region: String? = nil, completionHandler: @escaping ([Searchable]?, InvidiousError?) -> Void) {
-            var counter = 0
+            var flag = false
             instances.forEach { instance in
                 let temporaryFetcher = InvidiousFetcher(instance: instance, timeout: super.timeout)
-                temporaryFetcher.fetchSearchResults(searchQuery: query, page: Int32(page), soryBy: sort?.rawValue, timeSort: time?.rawValue, duration: duration?.rawValue, type: type.rawValue, features: features?.map { $0.rawValue }, region: region) { [weak self] searchResults, error in
+                temporaryFetcher.fetchSearchResults(searchQuery: query, page: Int32(page), soryBy: sort?.rawValue, timeSort: time?.rawValue, duration: duration?.rawValue, type: type.rawValue, features: features?.map { $0.rawValue }, region: region) { searchResults, error in
                     
                     if let searchResults = searchResults {
                         let results = searchResults.compactMap { result -> Searchable? in
@@ -274,40 +279,29 @@ public class Invidious {
                             }
                             return nil
                         }
-                        completionHandler(results, error)
-                        self?.swap(with: instance)
-                        return
-                    } else {
-                        if counter == self!.instances.count - 1 {
-                            completionHandler(nil, error)
-                            return
+                        if flag == false {
+                            flag = true
+                            completionHandler(results, error)
                         }
-                        counter += 1
                     }
                 }
             }
         }
         
         public override func getPlaylist(id: String, page: Int = 1, completionHandler: @escaping (Playlist?, InvidiousError?) -> Void) {
-            var counter = 0
+            var flag = false
             instances.forEach { instance in
                 let temporaryFetcher = InvidiousFetcher(instance: instance, timeout: super.timeout)
-                temporaryFetcher.fetchPlaylist(playlistId: id, page: page) { [weak self] playlist, error in
+                temporaryFetcher.fetchPlaylist(playlistId: id, page: page) { playlist, error in
                     if let playlist = playlist {
-                        completionHandler(Playlist(from: playlist), error)
-                        self?.swap(with: instance)
-                        return
-                    } else {
-                        if counter == self!.instances.count - 1 {
-                            completionHandler(nil, error)
-                            return
+                        if flag == false {
+                            flag = true
+                            completionHandler(Playlist(from: playlist), error)
                         }
-                        counter += 1
                     }
                 }
             }
         }
-        
     }
     
     public var instance: String

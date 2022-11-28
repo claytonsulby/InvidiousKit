@@ -19,7 +19,7 @@ public struct Playlist: Identifiable, PlaylistData {
         self.title = playlist.title
         self.id = playlist.playlistId
         
-        self.thumbnailUrl = playlist.playlistThumbnail
+        self.thumbnailUrl = URL(string: playlist.playlistThumbnail)
         
         self.author = playlist.author
         self.authorId = playlist.authorId
@@ -38,7 +38,7 @@ public struct Playlist: Identifiable, PlaylistData {
     public let title: String
     public let id: String
 
-    public let thumbnailUrl: String
+    public let thumbnailUrl: URL?
     
     public let author: String
     public let authorId: String
@@ -64,11 +64,11 @@ public struct ChannelPlaylist: Searchable, PlaylistData, Identifiable {
         self.title = playlist.title
         self.id = playlist.playlistId
         
-        self.thumbnailUrl = playlist.playlistThumbnail
+        self.thumbnailUrl = URL(string: playlist.playlistThumbnail)
         
         self.author = playlist.author
         self.authorId = playlist.authorId
-        self.authorUrl = playlist.authorUrl
+        self.authorUrl = URL(string: playlist.authorUrl)
         
         self.videoCount = playlist.videoCount
         self.videos = playlist.videos.map { VideoPreview.ChannelPlaylistEntry(from: $0) }
@@ -77,11 +77,11 @@ public struct ChannelPlaylist: Searchable, PlaylistData, Identifiable {
     public let title: String
     public let id: String
 
-    public let thumbnailUrl: String
+    public let thumbnailUrl: URL?
     
     public let author: String
     public let authorId: String
-    public let authorUrl: String
+    public let authorUrl: URL?
     
     public let videoCount: Int32
     public let videos: [VideoPreview.ChannelPlaylistEntry]
@@ -91,7 +91,7 @@ public struct ChannelPlaylist: Searchable, PlaylistData, Identifiable {
 public protocol PlaylistData {
     var title: String { get }
     var id: String { get }
-    var thumbnailUrl: String { get }
+    var thumbnailUrl: URL? { get }
     var author: String { get }
     var authorId: String { get }
     var videoCount: Int32 { get }

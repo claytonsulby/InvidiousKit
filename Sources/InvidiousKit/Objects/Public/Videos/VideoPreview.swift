@@ -93,7 +93,7 @@ public struct VideoPreview {
     /// Object that stores data of a channel video preview, can be returned from search.
     public struct ChannelVideo: Searchable, VideoData, Identifiable {
         public var type: SearchOptions.AcceptableResultType { SearchOptions.AcceptableResultType.video }
-        
+        public var thumbnailUrl: URL? { thumbnails.first?.url }
         
         /// Initializes ChannelVideo from JSON decoded response
         /// - Parameter video: JSON decoded response from Invidious
@@ -107,7 +107,7 @@ public struct VideoPreview {
             self.viewCount = video.viewCount
             self.author = video.author
             self.authorId = video.authorId
-            self.authorUrl = video.authorUrl
+            self.authorUrl = URL(string: video.authorUrl)
             
             self.published = video.published
             self.publishedText = video.publishedText
@@ -131,7 +131,7 @@ public struct VideoPreview {
         
         public let author: String
         public let authorId: String
-        public let authorUrl: String
+        public let authorUrl: URL?
         
         public let published: Int64
         public let publishedText: String

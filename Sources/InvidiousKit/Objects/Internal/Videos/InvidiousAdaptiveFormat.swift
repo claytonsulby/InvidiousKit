@@ -10,8 +10,8 @@ import Foundation
 
 struct InvidiousAdaptiveFormat: Codable {
     
-    let `init`:String
-    let index: String
+    let `init`:String?
+    let index: String?
     let bitrate: String
     let url: String
     let itag: String
