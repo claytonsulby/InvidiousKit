@@ -8,6 +8,23 @@
 
 import Foundation
 
+internal enum APIQuery : String {
+    
+    case videos
+    case annotations
+    case comments
+    case captions
+    case trending
+    case popular
+    case channelComments = "channels/comments"
+    case channelSearch = "channels/seach"
+    case searchSuggestions = "search/suggestions"
+    case search
+    case playlist
+    case mixes
+
+}
+
 internal class InvidiousFetcher {
     
     init(instance: String, timeout: TimeInterval) {
@@ -25,6 +42,18 @@ internal class InvidiousFetcher {
         }
     }
     
+    func baseAPIComponents(_ query: APIQuery, instance: String) -> URLComponents {
+
+        var components = URLComponents()
+        components.scheme = URL(string: instance)?.scheme ?? "https"
+        components.host = URL(string: instance)?.host ?? instance
+        components.path = "/api/v1/" + query.rawValue
+        components.queryItems = []
+        
+        return components
+        
+    }
+
     func fetchVideo(videoId id: String, callbackHandler: @escaping (InvidiousVideo?, InvidiousError?) -> Void) {
         guard id.count == 11 else {
             callbackHandler(nil, .invalidDataSupplied(message: "Invalid Video ID. Expected 11 characters, got \(id.count).", data: id.data(using: .utf8)))
@@ -533,32 +562,27 @@ internal class InvidiousFetcher {
         
     }
     
-    func fetchSearchResults(searchQuery query: String, page: Int32 = 1, soryBy sort: String? = nil, timeSort when: String? = nil, duration: String? = nil, type: String = "all", features: [String]? = nil, region: String? = nil, callbackHandler: @escaping (Array<Any>?, InvidiousError?) -> Void) {
+    func fetchSearchResults(searchQuery query: String, page: Int32 = 1, soryBy sort: String? = nil, timeSort date: String? = nil, duration: String? = nil, type: String = "all", features: [String]? = nil, region: String? = nil, callbackHandler: @escaping (Array<Any>?, InvidiousError?) -> Void) {
         
         guard let encodedSearchQuery = query.addingPercentEncoding(withAllowedCharacters: .alphanumerics) else {
             callbackHandler(nil, .invalidDataSupplied(message: "Invalid search query", data: nil))
             return
         }
+
+        var components = baseAPIComponents(.search, instance: instance)
+        components.queryItems?.append(contentsOf: [
+            URLQueryItem(name: "q", value: encodedSearchQuery),
+            URLQueryItem(name: "page", value: "\(page)"),
+            URLQueryItem(name: "type", value: type)
+        ])
         
-        var urlString = "\(instance)/api/v1/search?q=\(encodedSearchQuery)&page=\(page)&type=\(type)"
-        
-        if sort != nil {
-            urlString = "\(urlString)&sort=\(sort!)"
-        }
-        if when != nil {
-            urlString = "\(urlString)&date=\(when!)"
-        }
-        if duration != nil {
-            urlString = "\(urlString)&duration=\(duration!)"
-        }
-        if features != nil {
-            urlString = "\(urlString)&features=\(features!.joined(separator: ","))"
-        }
-        if region != nil {
-            urlString = "\(urlString)&region=\(region!)"
-        }
-        
-        guard let url = URL(string: urlString) else {
+        sort != nil ? components.queryItems?.append(URLQueryItem(name: "sort", value: sort)) : ()
+        date != nil ? components.queryItems?.append(URLQueryItem(name: "sort", value: date)) : ()
+        duration != nil ? components.queryItems?.append(URLQueryItem(name: "sort", value: duration)) : ()
+        features != nil ? components.queryItems?.append(URLQueryItem(name: "sort", value: features?.joined(separator: ","))) : ()
+        region != nil ? components.queryItems?.append(URLQueryItem(name: "region", value: sort)) : ()
+
+        guard let url = components.url else {
             callbackHandler(nil, .invalidDataSupplied(message: "Invalid URL", data: nil))
             return
         }
