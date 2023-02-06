@@ -16,13 +16,22 @@ internal enum APIQuery : String {
     case captions
     case trending
     case popular
+    case channel = "channels"
     case channelComments = "channels/comments"
-    case channelSearch = "channels/seach"
+    case channelVideos = "channels/videos"
+    case channelPlaylists = "channels/playlists"
+    case channelSearch = "channels/search"
     case searchSuggestions = "search/suggestions"
     case search
     case playlist
     case mixes
 
+}
+
+public enum InvidiousSortDescriptor : String {
+    case newest
+    case oldest
+    case popular
 }
 
 internal class InvidiousFetcher {
@@ -42,12 +51,12 @@ internal class InvidiousFetcher {
         }
     }
     
-    func baseAPIComponents(_ query: APIQuery, instance: String) -> URLComponents {
+    func baseAPIComponents(_ query: APIQuery, appendingPath: String? = nil, instance: String) -> URLComponents {
 
         var components = URLComponents()
         components.scheme = URL(string: instance)?.scheme ?? "https"
         components.host = URL(string: instance)?.host ?? instance
-        components.path = "/api/v1/" + query.rawValue
+        components.path = "/api/v1/" + query.rawValue + (appendingPath != nil ? "/" + appendingPath! : "")
         components.queryItems = []
         
         return components
@@ -60,7 +69,9 @@ internal class InvidiousFetcher {
             return
         }
         
-        guard let url = URL(string: "\(instance)/api/v1/videos/\(id)") else {
+        var components = baseAPIComponents(.videos, appendingPath: id, instance: instance)
+        
+        guard let url = components.url else {
             callbackHandler(nil, .invalidDataSupplied(message: "Invalid URL", data: nil))
             return
         }
@@ -104,13 +115,18 @@ internal class InvidiousFetcher {
         }
     }
     
-    func fetchComments(videoId id: String, callbackHandler: @escaping (InvidiousCommentsReference?, InvidiousError?) -> Void) {
+    func fetchComments(videoId id: String, continuation: String?, callbackHandler: @escaping (InvidiousCommentsReference?, InvidiousError?) -> Void) {
         guard id.count == 11 else {
             callbackHandler(nil, .invalidDataSupplied(message: "Invalid Video ID. Expected 11 characters, got \(id.count).", data: id.data(using: .utf8)))
             return
         }
         
-        guard let url = URL(string: "\(instance)/api/v1/comments/\(id)") else {
+        var components = baseAPIComponents(.comments, appendingPath: id, instance: instance)
+        components.queryItems?.append(contentsOf: [
+            URLQueryItem(name: "continuation", optional: continuation)
+        ].compactMap({ $0 }))
+        
+        guard let url = components.url else {
             callbackHandler(nil, .invalidDataSupplied(message: "Invalid URL", data: nil))
             return
         }
@@ -161,7 +177,9 @@ internal class InvidiousFetcher {
             return
         }
         
-        guard let url = URL(string: "\(instance)/api/v1/captions/\(id)") else {
+        var components = baseAPIComponents(.captions, appendingPath: id, instance: instance)
+        
+        guard let url = components.url else {
             callbackHandler(nil, .invalidDataSupplied(message: "Invalid URL", data: nil))
             return
         }
@@ -215,17 +233,14 @@ internal class InvidiousFetcher {
     
     func fetchTrending(type: String? = nil, region: String? = nil, callbackHandler: @escaping ([InvidiousVideoPreview.ChannelVideo]?, InvidiousError?) -> Void) {
         
-        var urlString = "\(instance)/api/v1/trending"
+        var components = baseAPIComponents(.trending, instance: instance)
+        components.queryItems?.append(contentsOf: [
+            URLQueryItem(name: "type", optional: type),
+            URLQueryItem(name: "region", optional: region)
+
+        ].compactMap({ $0 }))
         
-        if type != nil && region != nil {
-            urlString = "\(urlString)?type=\(type!)&region=\(region!)"
-        } else if type != nil {
-            urlString = "\(urlString)?type=\(type!)"
-        } else if region != nil {
-            urlString = "\(urlString)?region=\(region!)"
-        }
-        
-        guard let url = URL(string: urlString) else {
+        guard let url = components.url else {
             callbackHandler(nil, .invalidDataSupplied(message: "Invalid URL", data: nil))
             return
         }
@@ -276,7 +291,9 @@ internal class InvidiousFetcher {
     
     func fetchPopular(callbackHandler: @escaping ([InvidiousVideoPreview.PopularVideo]?, InvidiousError?) -> Void) {
         
-        guard let url = URL(string: "\(instance)/api/v1/popular") else {
+        var components = baseAPIComponents(.popular, instance: instance)
+        
+        guard let url = components.url else {
             callbackHandler(nil, .invalidDataSupplied(message: "Invalid URL", data: nil))
             return
         }
@@ -316,9 +333,11 @@ internal class InvidiousFetcher {
         }
     }
     
-    func fetchChannel(channelId id: String, sortBy sort: String = "newest", callbackHandler: @escaping (InvidiousChannel?, InvidiousError?) -> Void) {
+    func fetchChannel(channelId id: String, sortBy sort: InvidiousSortDescriptor = .newest, callbackHandler: @escaping (InvidiousChannel?, InvidiousError?) -> Void) {
         
-        guard let url = URL(string: "\(instance)/api/v1/channels/\(id)") else {
+        var components = baseAPIComponents(.channel, appendingPath: id, instance: instance)
+        
+        guard let url = components.url else {
             callbackHandler(nil, .invalidDataSupplied(message: "Invalid URL", data: nil))
             return
         }
@@ -362,14 +381,15 @@ internal class InvidiousFetcher {
         }
     }
     
-    func fetchChannelVideos(channelId id: String, sortBy sort: String = "newest", callbackHandler: @escaping ([InvidiousVideoPreview.ChannelVideo]?, InvidiousError?) -> Void) {
+    func fetchChannelVideos(channelId id: String, sortBy sort: InvidiousSortDescriptor = .newest, continuation: String? = nil, callbackHandler: @escaping (InvidiousChannelVideoReference?, InvidiousError?) -> Void) {
+
+        var components = baseAPIComponents(.channelVideos, appendingPath: id, instance: instance)
+        components.queryItems?.append(contentsOf: [
+            URLQueryItem(name: "sort_by", value: sort.rawValue),
+            URLQueryItem(name: "continuation", optional: continuation)
+        ].compactMap({ $0 }))
         
-        if sort != "newest" && sort != "oldest" && sort != "popular" {
-            callbackHandler(nil, .invalidDataSupplied(message: "Invalid sort description, expected 'newest', 'oldest', or 'popular', got \(sort.lowercased())", data: nil))
-            return
-        }
-        
-        guard let url = URL(string: "\(instance)/api/v1/channels/videos/\(id)?sort_by=\(sort.lowercased())") else {
+        guard let url = components.url else {
             callbackHandler(nil, .invalidDataSupplied(message: "Invalid URL", data: nil))
             return
         }
@@ -393,7 +413,7 @@ internal class InvidiousFetcher {
                         callbackHandler(nil, .decodingError(message: "Could not Convert Optional<Data> into Data", data: optionalData))
                         return
                     }
-                    if let videos = try? JSONDecoder().decode([InvidiousVideoPreview.ChannelVideo].self, from: data) {
+                    if let videos = try? JSONDecoder().decode(InvidiousChannelVideoReference.self, from: data) {
                         callbackHandler(videos, nil)
                     } else {
                         callbackHandler(nil, .decodingError(message: "Could not decode data", data: data))
@@ -409,19 +429,16 @@ internal class InvidiousFetcher {
         }
     }
     
-    func fetchChannelPlaylists(channelId id: String, sortBy sort: String = "newest", continuation: String? = nil, callbackHandler: @escaping (InvidiousChannelPlaylistsReference?, InvidiousError?) -> Void) {
+    func fetchChannelPlaylists(channelId id: String, sortBy sort: InvidiousSortDescriptor = .newest, continuation: String? = nil, callbackHandler: @escaping (InvidiousChannelPlaylistsReference?, InvidiousError?) -> Void) {
         
-        var urlString = "\(instance)/api/v1/channels/playlists/\(id)?sort_by=\(sort)"
-        
-        if sort != "newest" && sort != "oldest" && sort != "popular" {
-            callbackHandler(nil, .invalidDataSupplied(message: "Invalid sort description, expected 'newest', 'oldest', or 'popular', got \(sort.lowercased())", data: nil))
-        }
+        var components = baseAPIComponents(.channelPlaylists, appendingPath: id, instance: instance)
+        components.queryItems?.append(contentsOf: [
+            URLQueryItem(name: "sort_by", value: sort.rawValue),
+            URLQueryItem(name: "continuation", optional: continuation)
 
-        if continuation != nil {
-            urlString.append("&continuation=\(continuation!)")
-        }
-        
-        guard let url = URL(string: urlString) else {
+        ].compactMap({ $0 }))
+
+        guard let url = components.url else {
             callbackHandler(nil, .invalidDataSupplied(message: "Invalid URL", data: nil))
             return
         }
@@ -465,7 +482,9 @@ internal class InvidiousFetcher {
     
     func fetchChannelComments(channelId id: String, callbackHandler: @escaping (InvidiousCommentsReference.ChannelComments?, InvidiousError?) -> Void) {
         
-        guard let url = URL(string: "\(instance)/api/v1/channels/comments/\(id)") else {
+        var components = baseAPIComponents(.channelComments, appendingPath: id, instance: instance)
+        
+        guard let url = components.url else {
             callbackHandler(nil, .invalidDataSupplied(message: "Invalid URL", data: nil))
             return
         }
@@ -517,7 +536,12 @@ internal class InvidiousFetcher {
             return
         }
         
-        guard let url = URL(string: "\(instance)/api/v1/search/suggestions?q=\(encodedSearchQuery)") else {
+        var components = baseAPIComponents(.searchSuggestions, instance: instance)
+        components.queryItems?.append(contentsOf: [
+            URLQueryItem(name: "q", value: encodedSearchQuery),
+        ].compactMap({ $0 }))
+        
+        guard let url = components.url else {
             callbackHandler(nil, .invalidDataSupplied(message: "Invalid URL", data: nil))
             return
         }
@@ -573,14 +597,13 @@ internal class InvidiousFetcher {
         components.queryItems?.append(contentsOf: [
             URLQueryItem(name: "q", value: encodedSearchQuery),
             URLQueryItem(name: "page", value: "\(page)"),
-            URLQueryItem(name: "type", value: type)
-        ])
-        
-        sort != nil ? components.queryItems?.append(URLQueryItem(name: "sort", value: sort)) : ()
-        date != nil ? components.queryItems?.append(URLQueryItem(name: "sort", value: date)) : ()
-        duration != nil ? components.queryItems?.append(URLQueryItem(name: "sort", value: duration)) : ()
-        features != nil ? components.queryItems?.append(URLQueryItem(name: "sort", value: features?.joined(separator: ","))) : ()
-        region != nil ? components.queryItems?.append(URLQueryItem(name: "region", value: sort)) : ()
+            URLQueryItem(name: "type", value: type),
+            URLQueryItem(name: "sort", optional: sort),
+            URLQueryItem(name: "date", optional: date),
+            URLQueryItem(name: "duration", optional: duration),
+            URLQueryItem(name: "features", optional: features?.joined(separator: ",")),
+            URLQueryItem(name: "region", optional: region)
+        ].compactMap({ $0 }))
 
         guard let url = components.url else {
             callbackHandler(nil, .invalidDataSupplied(message: "Invalid URL", data: nil))

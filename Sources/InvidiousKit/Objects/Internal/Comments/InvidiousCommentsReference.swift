@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct InvidiousCommentsReference: Codable {
+struct InvidiousCommentsReference: Codable, StringError {
     
     struct ChannelComments: Codable {
         let authorId: String

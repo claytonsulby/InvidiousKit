@@ -10,7 +10,7 @@ import Foundation
 
 struct InvidiousSearchReference: Codable {
     
-    struct Suggestions: Codable {
+    struct Suggestions: Codable, StringError {
         public let query: String
         public let suggestions: [String]
         public let error: String?

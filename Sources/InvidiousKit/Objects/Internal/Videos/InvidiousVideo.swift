@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct InvidiousVideo: Codable {
+struct InvidiousVideo: Codable, StringError {
 
     let error: String?
     

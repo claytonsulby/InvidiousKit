@@ -104,11 +104,11 @@ public class Invidious {
             }
         }
         
-        public override func getVideoComments(id: String, completionHandler: @escaping (Int32?, [Comment]?, String?, InvidiousError?) -> Void) {
+        public override func getVideoComments(id: String, continuation: String?, completionHandler: @escaping (Int32?, [Comment]?, String?, InvidiousError?) -> Void) {
             var counter = 0
             instances.forEach { instance in
                 let temporaryFetcher = InvidiousFetcher(instance: instance, timeout: super.timeout)
-                temporaryFetcher.fetchComments(videoId: id) { [weak self] comments, error in
+                temporaryFetcher.fetchComments(videoId: id, continuation: continuation) { [weak self] comments, error in
                     if let comments = comments {
                         completionHandler(comments.commentCount, comments.comments.map { Comment(from: $0)}, comments.continuation, error)
                         self?.swap(with: instance)
@@ -182,7 +182,7 @@ public class Invidious {
             }
         }
         
-        public override func getChannel(id: String, sortedBy sort: Channel.SortDescriptor = .newest, completionHandler: @escaping (Channel?, InvidiousError?) -> Void) {
+        public override func getChannel(id: String, sortedBy sort: InvidiousSortDescriptor = .newest, completionHandler: @escaping (Channel?, InvidiousError?) -> Void) {
             var flag = false
             instances.forEach { instance in
                 let temporaryFetcher = InvidiousFetcher(instance: instance, timeout: super.timeout)
@@ -197,22 +197,22 @@ public class Invidious {
             }
         }
         
-        public override func getChannelVideos(id: String, sortedBy sort: Channel.SortDescriptor = .newest, completionHandler: @escaping ([VideoPreview.ChannelVideo]?, InvidiousError?) -> Void) {
+        public override func getChannelVideos(id: String, sortedBy sort: InvidiousSortDescriptor = .newest, continuation: String? = nil, completionHandler: @escaping ([VideoPreview.ChannelVideo]?, String?, InvidiousError?) -> Void) {
             var flag = false
             instances.forEach { instance in
                 let temporaryFetcher = InvidiousFetcher(instance: instance, timeout: super.timeout)
-                temporaryFetcher.fetchChannelVideos(channelId: id) { videos, error in
-                    if let videos = videos {
+                temporaryFetcher.fetchChannelVideos(channelId: id, continuation: continuation) { reference, error in
+                    if let reference = reference {
                         if flag == false {
                             flag = true
-                            completionHandler(videos.map { VideoPreview.ChannelVideo(from: $0) }, error)
+                            completionHandler(reference.videos.map { VideoPreview.ChannelVideo(from: $0) }, reference.continuation, error)
                         }
                     }
                 }
             }
         }
         
-        public override func getChannelPlaylists(id: String, sortedBy sort: Channel.SortDescriptor, continuation: String? = nil, completionHandler: @escaping ([ChannelPlaylist]?, String?, InvidiousError?) -> Void) {
+        public override func getChannelPlaylists(id: String, sortedBy sort: InvidiousSortDescriptor, continuation: String? = nil, completionHandler: @escaping ([ChannelPlaylist]?, String?, InvidiousError?) -> Void) {
             var flag = false
             instances.forEach { instance in
                 let temporaryFetcher = InvidiousFetcher(instance: instance, timeout: super.timeout)
@@ -338,8 +338,8 @@ public class Invidious {
     /// - Parameters:
     ///   - id: Video id (11 Characters)
     ///   - completionHandler: Closure called when the fetch is completed, contains the following optional properties: Number of comments, Array of `Comment` objects, continuation `String` and `InvidiousError`
-    public func getVideoComments(id: String, completionHandler: @escaping (Int32?, [Comment]?, String?, InvidiousError?) -> Void) {
-        fetcher.fetchComments(videoId: id) { comments, error in
+    public func getVideoComments(id: String, continuation: String?, completionHandler: @escaping (Int32?, [Comment]?, String?, InvidiousError?) -> Void) {
+        fetcher.fetchComments(videoId: id, continuation: continuation) { comments, error in
             if let comments = comments {
                 completionHandler(comments.commentCount, comments.comments.map { Comment(from: $0)}, comments.continuation, error)
                 return
@@ -396,7 +396,7 @@ public class Invidious {
     ///   - id: Channel id
     ///   - sort: How items should be sorted (oldest, newest, popular)
     ///   - completionHandler: Closure called when the fetch is completed, contains optional `Channel` and `InvidiousError` objects
-    public func getChannel(id: String, sortedBy sort: Channel.SortDescriptor = .newest, completionHandler: @escaping (Channel?, InvidiousError?) -> Void) {
+    public func getChannel(id: String, sortedBy sort: InvidiousSortDescriptor = .newest, completionHandler: @escaping (Channel?, InvidiousError?) -> Void) {
         fetcher.fetchChannel(channelId: id) { channel, error in
             if let channel = channel {
                 completionHandler(Channel(from: channel), error)
@@ -411,13 +411,13 @@ public class Invidious {
     ///   - id: Channel id
     ///   - sort: How items should be sorted (oldest, newest, popular)
     ///   - completionHandler: Closure called when the fetch is completed, contains optional array of `VideoPreview` objects and `InvidiousError`
-    public func getChannelVideos(id: String, sortedBy sort: Channel.SortDescriptor = .newest, completionHandler: @escaping ([VideoPreview.ChannelVideo]?, InvidiousError?) -> Void) {
-        fetcher.fetchChannelVideos(channelId: id) { videos, error in
-            if let videos = videos {
-                completionHandler(videos.map { VideoPreview.ChannelVideo(from: $0) }, error)
+    public func getChannelVideos(id: String, sortedBy sort: InvidiousSortDescriptor = .newest, continuation:String? = nil, completionHandler: @escaping ([VideoPreview.ChannelVideo]?, String?, InvidiousError?) -> Void) {
+        fetcher.fetchChannelVideos(channelId: id, continuation: continuation) { reference, error in
+            if let reference = reference {
+                completionHandler(reference.videos.map { VideoPreview.ChannelVideo(from: $0) }, reference.continuation, error)
                 return
             }
-            completionHandler(nil, error)
+            completionHandler(nil, nil, error)
         }
         
     }
@@ -428,8 +428,8 @@ public class Invidious {
     ///   - sort: How items should be sorted (oldest, newest, popular)
     ///   - continuation: Continuation string
     ///   - completionHandler: Closure called when the fetch is completed, contains optional array of `ChannelPlaylist` objects and `InvidiousError`
-    public func getChannelPlaylists(id: String, sortedBy sort: Channel.SortDescriptor, continuation: String? = nil, completionHandler: @escaping ([ChannelPlaylist]?, String?, InvidiousError?) -> Void) {
-        fetcher.fetchChannelPlaylists(channelId: id, sortBy: sort.toString()) { reference, error in
+    public func getChannelPlaylists(id: String, sortedBy sort: InvidiousSortDescriptor, continuation: String? = nil, completionHandler: @escaping ([ChannelPlaylist]?, String?, InvidiousError?) -> Void) {
+        fetcher.fetchChannelPlaylists(channelId: id, sortBy: sort) { reference, error in
             if let reference = reference {
                 completionHandler(reference.playlists.map { ChannelPlaylist(from: $0) }, reference.continuation, error)
                 return

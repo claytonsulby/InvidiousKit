@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct InvidiousChannel: Codable {
+struct InvidiousChannel: Codable, StringError {
     
     struct RelatedChannel: Codable {
         let author: String

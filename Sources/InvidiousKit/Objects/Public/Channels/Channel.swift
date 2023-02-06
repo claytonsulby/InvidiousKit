@@ -9,25 +9,25 @@
 import Foundation
 
 /// Object responsible for storing video data
-public struct Channel: ChannelData, Identifiable {
+public struct Channel: ChannelData, Identifiable, StringError {
 
-    /// Filter that dictates, how vidoes should be sorted
-    public enum SortDescriptor {
-        case newest
-        case oldest
-        case popular
-        
-        func toString() -> String {
-            switch self {
-                case .newest:
-                    return "newest"
-                case .oldest:
-                    return "oldest"
-                case .popular:
-                    return "popular"
-            }
-        }
-    }
+//    /// Filter that dictates, how vidoes should be sorted
+//    public enum SortDescriptor {
+//        case newest
+//        case oldest
+//        case popular
+//
+//        func toString() -> String {
+//            switch self {
+//                case .newest:
+//                    return "newest"
+//                case .oldest:
+//                    return "oldest"
+//                case .popular:
+//                    return "popular"
+//            }
+//        }
+//    }
     
     /// Object responsible for storing channel icon data
     public struct Icon {
