@@ -77,7 +77,7 @@ internal class InvidiousFetcher {
         }
         
         let request = URLRequest(url: url, timeoutInterval: timeout)
-        
+
         globalDataTask = URLSession.shared.dataTask(with: request) { optionalData, response, error in
             if (error as? URLError)?.code == .timedOut {
                 callbackHandler(nil, .requestTimeout(data: optionalData))
@@ -530,15 +530,10 @@ internal class InvidiousFetcher {
     }
     
     func fetchSearchSuggestions(searchQuery query: String, callbackHandler: @escaping (InvidiousSearchReference.Suggestions?, InvidiousError?) -> Void) {
-        
-        guard let encodedSearchQuery = query.addingPercentEncoding(withAllowedCharacters: .alphanumerics) else {
-            callbackHandler(nil, .invalidDataSupplied(message: "Invalid search query", data: nil))
-            return
-        }
-        
+
         var components = baseAPIComponents(.searchSuggestions, instance: instance)
         components.queryItems?.append(contentsOf: [
-            URLQueryItem(name: "q", value: encodedSearchQuery),
+            URLQueryItem(name: "q", value: query),
         ].compactMap({ $0 }))
         
         guard let url = components.url else {
@@ -587,15 +582,10 @@ internal class InvidiousFetcher {
     }
     
     func fetchSearchResults(searchQuery query: String, page: Int32 = 1, soryBy sort: String? = nil, timeSort date: String? = nil, duration: String? = nil, type: String = "all", features: [String]? = nil, region: String? = nil, callbackHandler: @escaping (Array<Any>?, InvidiousError?) -> Void) {
-        
-        guard let encodedSearchQuery = query.addingPercentEncoding(withAllowedCharacters: .alphanumerics) else {
-            callbackHandler(nil, .invalidDataSupplied(message: "Invalid search query", data: nil))
-            return
-        }
 
         var components = baseAPIComponents(.search, instance: instance)
         components.queryItems?.append(contentsOf: [
-            URLQueryItem(name: "q", value: encodedSearchQuery),
+            URLQueryItem(name: "q", value: query),
             URLQueryItem(name: "page", value: "\(page)"),
             URLQueryItem(name: "type", value: type),
             URLQueryItem(name: "sort", optional: sort),

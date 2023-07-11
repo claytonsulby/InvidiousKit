@@ -8,7 +8,6 @@
 import Foundation
 import Combine
 
-@available(iOS 13.0, macOS 10.15, *)
 struct Agent {
 
     struct Response<T> {
@@ -21,6 +20,7 @@ struct Agent {
         let response: URLResponse
     }
 
+    @available(iOS 13.0, *)
     func run<T: Decodable>(_ request: URLRequest, _ decoder: JSONDecoder = JSONDecoder()) -> AnyPublisher<Response<T>, Error> {
         return URLSession.shared
             .dataTaskPublisher(for: request)
@@ -33,25 +33,24 @@ struct Agent {
             .eraseToAnyPublisher()
     }
 
-    func run<T: Decodable>(_ request: URLRequest, _ decoder: JSONDecoder = JSONDecoder(), completion: @escaping (T) -> Void) throws {
+    func run<T: Decodable>(_ request: URLRequest, _ decoder: JSONDecoder = JSONDecoder(), completion: @escaping (T?, Error?) -> Void) throws {
         URLSession.shared.dataTask(with: request, completionHandler: { (data, response, error) in
             do {
-                try map(response: response, error: error, data: data, completion: { object in
-                    completion(object)
-                })
+                completion(try map(response: response, error: error, data: data), nil)
             } catch {
-                print(error.localizedDescription)
+                completion(nil, error)
             }
         }).resume()
     }
     
+    @available(iOS 13.0.0, *)
     func run<T: Decodable>(_ request: URLRequest, _ decoder: JSONDecoder = JSONDecoder()) async throws -> Response<T> {
         let (data, response) = try await URLSession.shared.data(for: request)
         let value = try decoder.decode(T.self, from: data)
         return Response(value: value, response: response)
     }
     
-    func map<T: Decodable>(response: URLResponse?, error: (any Error)?, data: Data?, completion: @escaping (T) -> Void) throws {
+    func map<T: Decodable>(response: URLResponse?, error: (any Error)?, data: Data?) throws -> T? {
         if (error as? URLError)?.code == .timedOut {
             throw InvidiousError.requestTimeout(data: data)
         }
@@ -66,7 +65,7 @@ struct Agent {
                 if let object = try? JSONDecoder().decode(T.self, from: data) {
                     if let stringError = object as? StringError {
                         if stringError.error == nil {
-                            completion(object)
+                            return object
                         } else {
                             throw InvidiousError.suppliedErrorField(message: stringError.error!, data: data)
                         }
@@ -80,5 +79,6 @@ struct Agent {
         } else {
             throw InvidiousError.decodingError(message: "Failed to cast URLResponse to HTTPURLResponse", data: data)
         }
+        return nil
     }
 }
