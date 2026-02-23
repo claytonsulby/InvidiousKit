@@ -20,6 +20,7 @@ struct Agent {
         let response: URLResponse
     }
 
+    @available(macOS 10.15, *)
     @available(iOS 13.0, *)
     func run<T: Decodable>(_ request: URLRequest, _ decoder: JSONDecoder = JSONDecoder()) -> AnyPublisher<Response<T>, Error> {
         return URLSession.shared
@@ -43,6 +44,7 @@ struct Agent {
         }).resume()
     }
     
+    @available(macOS 10.15.0, *)
     @available(iOS 13.0.0, *)
     func run<T: Decodable>(_ request: URLRequest, _ decoder: JSONDecoder = JSONDecoder()) async throws -> Response<T> {
         let (data, response) = try await URLSession.shared.data(for: request)

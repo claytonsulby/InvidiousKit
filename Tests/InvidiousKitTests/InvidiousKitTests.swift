@@ -8,6 +8,7 @@ final class InvidiousKitTests: XCTestCase {
     let invidious = Invidious.CascadingCombine(instances: ["https://invidious.snopyta.org", "https://invidious.zee.li",  "https://invidiou.site", "https://invidious.fdn.fr"], sessionTimeout: 8)
     
     let videoId = "1EEakkh4ZG4"
+    let livestreamId = "jfKfPfyJRdk"
     let channelId = "linustechtips"
     let playlistId = "PL8mG-RkN2uTyuEutQa79RZ0Q5u5gteUci"
     
@@ -27,10 +28,26 @@ final class InvidiousKitTests: XCTestCase {
         }
     }
     
+    func testVideoLivestreamFetch() {
+        var exp: XCTestExpectation? = expectation(description: "Video GET Request")
+        
+        invidious.getVideo(id: livestreamId) { video, error in
+            XCTAssertNotNil(video)
+            XCTAssertNil(error)
+            exp?.fulfill()
+            exp = nil
+        }
+        
+        waitForExpectations(timeout: TimeInterval(timeout)) { error in
+            print("\(String(describing: error?.localizedDescription))")
+            exp = nil
+        }
+    }
+    
     func testCommentsFetch() {
         var exp: XCTestExpectation? = expectation(description: "Comments GET Request")
         
-        invidious.getVideoComments(id: videoId) { count, comments, continuation, error in
+        invidious.getVideoComments(id: videoId, continuation: nil) { count, comments, continuation, error in
             XCTAssertNotNil(count)
             XCTAssertNotNil(comments)
             XCTAssertNotNil(continuation)
@@ -112,7 +129,7 @@ final class InvidiousKitTests: XCTestCase {
     func testChannelVideosFetch() {
         var exp: XCTestExpectation? = expectation(description: "Channel Videos GET Request")
         
-        invidious.getChannelVideos(id: channelId, sortedBy: .newest) { videos, error in
+        invidious.getChannelVideos(id: channelId, sortedBy: .newest) { videos, continuation, error in
             XCTAssertNotNil(videos)
             XCTAssertNil(error)
             exp?.fulfill()
